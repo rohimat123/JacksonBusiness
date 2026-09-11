@@ -101,7 +101,7 @@ export default async function CreateSalesPage() {
           ← Kembali ke Penjualan
         </Link>
 
-        <h1 className="mt-4 text-2xl font-bold text-white">
+        <h1 className="mt-4 depth-title text-2xl font-bold text-white">
           Tambah Penjualan
         </h1>
 
@@ -110,7 +110,7 @@ export default async function CreateSalesPage() {
         </p>
       </div>
 
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-6">
+      <div className="glass-panel depth-card rounded-2xl/50 p-6">
         <SalesForm
           stockBySeed={
             stockBySeed

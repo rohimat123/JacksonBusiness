@@ -691,7 +691,7 @@ export default function SalesForm({
           Total Penjualan
         </p>
 
-        <p className="mt-2 text-3xl font-bold text-white">
+        <p className="mt-2 depth-title text-3xl font-bold text-white">
           {formatMoney(
             totalAmount
           )}
@@ -792,7 +792,7 @@ export default function SalesForm({
             onChange={
               handleFileChange
             }
-            className="block w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-400 file:mr-4 file:rounded-lg file:border-0 file:bg-white file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black"
+            className="block w-full depth-input rounded-xl px-4 py-3 text-sm text-zinc-400 file:mr-4 file:rounded-lg file:border-0 file:bg-white file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black"
           />
         </div>
       </Field>
@@ -837,7 +837,7 @@ export default function SalesForm({
           </div>
 
           {previewUrl && (
-            <div className="mt-4 overflow-hidden rounded-xl border border-zinc-800 bg-black">
+            <div className="mt-4 overflow-hidden rounded-xl border border-emerald-500/15 bg-black">
               <img
                 src={
                   previewUrl
@@ -927,7 +927,7 @@ function InfoCard({
   value: string;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+    <div className="depth-surface rounded-xl p-4">
       <p className="text-xs uppercase tracking-wider text-zinc-600">
         {title}
       </p>
@@ -1138,4 +1138,4 @@ function formatMoney(
 }
 
 const inputClass =
-  "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-zinc-500";
+  "w-full depth-input rounded-xl px-4 py-3 text-sm text-white outline-none transition focus:border-zinc-500";

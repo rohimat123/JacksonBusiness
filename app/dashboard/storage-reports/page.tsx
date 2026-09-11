@@ -227,7 +227,7 @@ export default async function StorageReportsPage() {
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="depth-title text-2xl font-bold text-white">
             Load Plant / Lumbung
           </h1>
 
@@ -284,8 +284,8 @@ export default async function StorageReportsPage() {
 
       {/* SEED STORAGE */}
 
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-950/50">
-        <div className="border-b border-zinc-800 px-5 py-4">
+      <div className="glass-panel depth-card rounded-2xl/50">
+        <div className="border-b border-emerald-500/10 px-5 py-4">
           <h2 className="font-semibold text-white">
             Storage Per Seed
           </h2>
@@ -305,13 +305,13 @@ export default async function StorageReportsPage() {
               (seed) => (
                 <div
                   key={seed}
-                  className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"
+                  className="depth-surface rounded-xl p-4"
                 >
                   <p className="text-xs font-semibold uppercase tracking-wider text-zinc-600">
                     {seed}
                   </p>
 
-                  <p className="mt-2 text-xl font-bold text-white">
+                  <p className="mt-2 depth-number text-xl font-bold text-white">
                     {formatNumber(
                       seedTotals[
                         seed
@@ -350,8 +350,8 @@ export default async function StorageReportsPage() {
 
       {/* REPORT TABLE */}
 
-      <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950/50">
-        <div className="border-b border-zinc-800 px-5 py-4">
+      <div className="overflow-hidden glass-panel depth-card rounded-2xl/50">
+        <div className="border-b border-emerald-500/10 px-5 py-4">
           <h2 className="font-semibold text-white">
             Riwayat Load Plant
           </h2>
@@ -366,7 +366,7 @@ export default async function StorageReportsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-zinc-800 bg-zinc-900/40 text-xs uppercase tracking-wider text-zinc-500">
+              <thead className="border-b border-emerald-500/10 bg-zinc-900/40 text-xs uppercase tracking-wider text-zinc-500">
                 <tr>
                   <th className="px-5 py-4">
                     Tanggal
@@ -409,7 +409,7 @@ export default async function StorageReportsPage() {
                         key={
                           report.id
                         }
-                        className="transition hover:bg-zinc-900/40"
+                        className="transition hover:bg-emerald-950/25/40"
                       >
                         <td className="whitespace-nowrap px-5 py-4 text-zinc-300">
                           {formatDate(
@@ -489,12 +489,12 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-5">
+    <div className="glass-panel depth-card rounded-2xl/50 p-5">
       <p className="text-sm text-zinc-500">
         {title}
       </p>
 
-      <p className="mt-2 text-2xl font-bold text-white">
+      <p className="mt-2 depth-title text-2xl font-bold text-white">
         {value}
       </p>
 
@@ -513,12 +513,12 @@ function SmallStat({
   value: number;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-4">
+    <div className="depth-surface rounded-xl/50 p-4">
       <p className="text-sm text-zinc-500">
         {label}
       </p>
 
-      <p className="mt-1 text-xl font-bold text-white">
+      <p className="mt-1 depth-number text-xl font-bold text-white">
         {value}
       </p>
     </div>

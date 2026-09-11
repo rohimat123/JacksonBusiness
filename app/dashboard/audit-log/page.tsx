@@ -307,7 +307,7 @@ export default async function AuditLogPage({
           Administration
         </p>
 
-        <h1 className="mt-1 text-3xl font-bold text-white">
+        <h1 className="mt-1 depth-title text-3xl font-bold text-white">
           Audit Log
         </h1>
 
@@ -346,14 +346,14 @@ export default async function AuditLogPage({
 
       {/* FILTER */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+      <section className="glass-panel depth-card rounded-2xl p-5">
         <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/dashboard/audit-log"
             className={`rounded-lg border px-4 py-2 text-sm transition ${
               !selectedAction
                 ? "border-white bg-white text-black"
-                : "border-zinc-700 bg-zinc-950 text-zinc-300 hover:bg-zinc-900"
+                : "border-zinc-700 bg-zinc-950 text-zinc-300 hover:bg-emerald-950/25"
             }`}
           >
             Semua
@@ -369,7 +369,7 @@ export default async function AuditLogPage({
                 className={`rounded-lg border px-4 py-2 text-sm transition ${
                   selectedAction === action
                     ? "border-white bg-white text-black"
-                    : "border-zinc-700 bg-zinc-950 text-zinc-300 hover:bg-zinc-900"
+                    : "border-zinc-700 bg-zinc-950 text-zinc-300 hover:bg-emerald-950/25"
                 }`}
               >
                 {formatAction(
@@ -383,8 +383,8 @@ export default async function AuditLogPage({
 
       {/* LOGS */}
 
-      <section className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/60">
-        <div className="border-b border-zinc-800 px-6 py-5">
+      <section className="overflow-hidden glass-panel depth-card rounded-2xl">
+        <div className="border-b border-emerald-500/10 px-6 py-5">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="font-semibold text-white">
@@ -421,7 +421,7 @@ export default async function AuditLogPage({
               (log) => (
                 <div
                   key={log.id}
-                  className="px-6 py-5 transition hover:bg-zinc-900/50"
+                  className="px-6 py-5 transition hover:bg-emerald-950/25/50"
                 >
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0 flex-1">
@@ -484,7 +484,7 @@ export default async function AuditLogPage({
                             Lihat Metadata
                           </summary>
 
-                          <pre className="mt-3 overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-xs leading-6 text-zinc-500">
+                          <pre className="mt-3 overflow-x-auto depth-surface rounded-xl p-4 text-xs leading-6 text-zinc-500">
                             {JSON.stringify(
                               log.metadata,
                               null,
@@ -531,12 +531,12 @@ export default async function AuditLogPage({
                   currentPage - 1,
                   selectedAction
                 )}
-                className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-900"
+                className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 hover:bg-emerald-950/25"
               >
                 ← Sebelumnya
               </Link>
             ) : (
-              <span className="cursor-not-allowed rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-2 text-sm text-zinc-700">
+              <span className="cursor-not-allowed rounded-lg border border-emerald-500/15 bg-zinc-950 px-4 py-2 text-sm text-zinc-700">
                 ← Sebelumnya
               </span>
             )}
@@ -547,12 +547,12 @@ export default async function AuditLogPage({
                   currentPage + 1,
                   selectedAction
                 )}
-                className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-900"
+                className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 hover:bg-emerald-950/25"
               >
                 Berikutnya →
               </Link>
             ) : (
-              <span className="cursor-not-allowed rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-2 text-sm text-zinc-700">
+              <span className="cursor-not-allowed rounded-lg border border-emerald-500/15 bg-zinc-950 px-4 py-2 text-sm text-zinc-700">
                 Berikutnya →
               </span>
             )}
@@ -577,12 +577,12 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+    <div className="glass-panel depth-card rounded-2xl p-6">
       <p className="text-sm text-zinc-400">
         {title}
       </p>
 
-      <p className="mt-3 text-3xl font-bold text-white">
+      <p className="mt-3 depth-title text-3xl font-bold text-white">
         {value}
       </p>
 

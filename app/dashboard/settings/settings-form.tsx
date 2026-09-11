@@ -252,8 +252,8 @@ export default function SettingsForm({
       }
       className="space-y-6"
     >
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60">
-        <div className="border-b border-zinc-800 px-6 py-4">
+      <section className="glass-panel depth-card rounded-2xl">
+        <div className="border-b border-emerald-500/10 px-6 py-4">
           <h2 className="font-semibold text-white">
             General Settings
           </h2>

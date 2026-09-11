@@ -110,7 +110,7 @@ export default async function SalesDetailPage({
             ← Kembali ke Penjualan
           </Link>
 
-          <h1 className="mt-4 text-2xl font-bold text-white">
+          <h1 className="mt-4 depth-title text-2xl font-bold text-white">
             Detail Penjualan
           </h1>
 
@@ -132,7 +132,7 @@ export default async function SalesDetailPage({
 
       {/* STATUS */}
 
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-6">
+      <div className="glass-panel depth-card rounded-2xl/50 p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs uppercase tracking-wider text-zinc-600">
@@ -200,7 +200,7 @@ export default async function SalesDetailPage({
       <div className="grid gap-6 lg:grid-cols-2">
         {/* SELLER */}
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-6">
+        <section className="glass-panel depth-card rounded-2xl/50 p-6">
           <h2 className="font-semibold text-white">
             Informasi Penjual
           </h2>
@@ -235,7 +235,7 @@ export default async function SalesDetailPage({
 
         {/* REPORT */}
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-6">
+        <section className="glass-panel depth-card rounded-2xl/50 p-6">
           <h2 className="font-semibold text-white">
             Informasi Penjualan
           </h2>
@@ -301,14 +301,14 @@ export default async function SalesDetailPage({
 
       {/* SCREENSHOT */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-6">
+      <section className="glass-panel depth-card rounded-2xl/50 p-6">
         <h2 className="font-semibold text-white">
           Screenshot Bukti
         </h2>
 
         <div className="mt-5">
           {sale.evidence_url ? (
-            <div className="overflow-hidden rounded-xl border border-zinc-800 bg-black">
+            <div className="overflow-hidden rounded-xl border border-emerald-500/15 bg-black">
               <img
                 src={
                   sale.evidence_url
@@ -340,12 +340,12 @@ function StatCard({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-5">
+    <div className="glass-panel depth-card rounded-2xl/50 p-5">
       <p className="text-sm text-zinc-500">
         {title}
       </p>
 
-      <p className="mt-2 text-2xl font-bold text-white">
+      <p className="mt-2 depth-title text-2xl font-bold text-white">
         {value}
       </p>
     </div>

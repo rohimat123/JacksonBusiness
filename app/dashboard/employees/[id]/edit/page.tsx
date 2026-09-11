@@ -39,7 +39,7 @@ export default async function EditEmployeePage({
           Pegawai
         </p>
 
-        <h1 className="mt-1 text-3xl font-bold">
+        <h1 className="mt-1 depth-title text-3xl font-bold">
           Edit Pegawai
         </h1>
 
@@ -48,7 +48,7 @@ export default async function EditEmployeePage({
         </p>
       </div>
 
-      <div className="mt-8 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <div className="mt-8 glass-panel depth-card rounded-2xl p-6">
         <EditEmployeeForm employee={employee} />
       </div>
     </div>

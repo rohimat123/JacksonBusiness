@@ -61,7 +61,7 @@ export default async function InformationPage() {
           Management
         </p>
 
-        <h1 className="mt-1 text-2xl font-bold text-white">
+        <h1 className="mt-1 depth-title text-2xl font-bold text-white">
           Informasi & Rules
         </h1>
 
@@ -79,7 +79,7 @@ export default async function InformationPage() {
               key={
                 rule.id
               }
-              className="rounded-xl border border-zinc-800 bg-zinc-950 p-5"
+              className="depth-surface rounded-xl p-5"
             >
               <CategoryBadge
                 category={

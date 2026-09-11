@@ -212,4 +212,4 @@ function Field({
 }
 
 const inputClass =
-  "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-zinc-500";
+  "w-full depth-input rounded-xl px-4 py-3 text-sm text-white outline-none transition focus:border-zinc-500";

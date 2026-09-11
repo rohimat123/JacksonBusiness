@@ -51,7 +51,7 @@ export default async function EmployeeDetailPage({
             Detail Pegawai
           </p>
 
-          <h1 className="mt-1 text-3xl font-bold">
+          <h1 className="mt-1 depth-title text-3xl font-bold">
             {employee.name}
           </h1>
 
@@ -100,7 +100,7 @@ export default async function EmployeeDetailPage({
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+        <section className="glass-panel depth-card rounded-2xl p-6">
           <h2 className="font-semibold">
             Informasi Pegawai
           </h2>
@@ -133,7 +133,7 @@ export default async function EmployeeDetailPage({
           </div>
         </section>
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+        <section className="glass-panel depth-card rounded-2xl p-6">
           <h2 className="font-semibold">
             Periode & Target
           </h2>
@@ -172,7 +172,7 @@ export default async function EmployeeDetailPage({
         </section>
       </div>
 
-      <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <section className="mt-6 glass-panel depth-card rounded-2xl p-6">
         <div>
           <h2 className="font-semibold">
             Progress Target
@@ -185,7 +185,7 @@ export default async function EmployeeDetailPage({
 
         <div className="mt-6 flex items-end justify-between">
           <div>
-            <p className="text-3xl font-bold">
+            <p className="depth-title text-3xl font-bold">
               0
             </p>
 
@@ -221,10 +221,10 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <div className="glass-panel depth-card rounded-2xl p-5">
       <p className="text-sm text-zinc-500">{title}</p>
 
-      <p className="mt-2 text-2xl font-bold">{value}</p>
+      <p className="mt-2 depth-title text-2xl font-bold">{value}</p>
 
       <p className="mt-2 text-xs text-zinc-600">
         {description}

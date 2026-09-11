@@ -149,7 +149,7 @@ export default async function ApplicationsPage() {
           Management
         </p>
 
-        <h1 className="mt-1 text-3xl font-bold text-white">
+        <h1 className="mt-1 depth-title text-3xl font-bold text-white">
           Applicants
         </h1>
 
@@ -160,8 +160,8 @@ export default async function ApplicationsPage() {
         </p>
       </div>
 
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-950/50">
-        <div className="border-b border-zinc-800 px-5 py-4">
+      <div className="glass-panel depth-card rounded-2xl/50">
+        <div className="border-b border-emerald-500/10 px-5 py-4">
           <p className="font-semibold text-white">
             Pending Applications
           </p>
@@ -185,7 +185,7 @@ export default async function ApplicationsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-zinc-800 bg-zinc-900/40 text-xs uppercase text-zinc-500">
+              <thead className="border-b border-emerald-500/10 bg-zinc-900/40 text-xs uppercase text-zinc-500">
                 <tr>
                   <th className="px-5 py-4">
                     Nama IC

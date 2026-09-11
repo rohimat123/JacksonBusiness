@@ -428,7 +428,7 @@ async function submitSSRP() {
       {/* EMPLOYEE */}
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+        <div className="depth-surface rounded-xl p-4">
           <p className="text-xs uppercase tracking-wide text-zinc-600">
             Pegawai
           </p>
@@ -440,7 +440,7 @@ async function submitSSRP() {
           </p>
         </div>
 
-        <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+        <div className="depth-surface rounded-xl p-4">
           <p className="text-xs uppercase tracking-wide text-zinc-600">
             Seed
           </p>
@@ -578,7 +578,7 @@ async function submitSSRP() {
             </button>
           </div>
 
-          <div className="overflow-hidden rounded-lg border border-zinc-800 bg-black">
+          <div className="overflow-hidden rounded-lg border border-emerald-500/15 bg-black">
             <img
               src={
                 previewUrl

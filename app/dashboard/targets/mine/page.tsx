@@ -221,7 +221,7 @@ export default async function MyTargetPage() {
             Pekerjaan Saya
           </p>
 
-          <h1 className="mt-1 text-3xl font-bold text-white">
+          <h1 className="mt-1 depth-title text-3xl font-bold text-white">
             Target Saya
           </h1>
         </div>
@@ -479,7 +479,7 @@ export default async function MyTargetPage() {
         </p>
 
         <div className="mt-1 flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-bold text-white">
+          <h1 className="depth-title text-3xl font-bold text-white">
             Target Saya
           </h1>
 
@@ -505,14 +505,14 @@ export default async function MyTargetPage() {
 
       {/* EMPLOYEE */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <section className="glass-panel depth-card rounded-2xl p-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-xs uppercase tracking-wider text-zinc-600">
               Pegawai
             </p>
 
-            <h2 className="mt-2 text-xl font-bold text-white">
+            <h2 className="mt-2 depth-number text-xl font-bold text-white">
               {employee.name}
             </h2>
 
@@ -620,14 +620,14 @@ export default async function MyTargetPage() {
 
       {/* PROGRESS */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <section className="glass-panel depth-card rounded-2xl p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm text-zinc-500">
               Progress Target
             </p>
 
-            <p className="mt-2 text-3xl font-bold text-white">
+            <p className="mt-2 depth-title text-3xl font-bold text-white">
               {formatNumber(
                 approvedPlants
               )}
@@ -639,7 +639,7 @@ export default async function MyTargetPage() {
           </div>
 
           <div className="sm:text-right">
-            <p className="text-3xl font-bold text-white">
+            <p className="depth-title text-3xl font-bold text-white">
               {percentage.toFixed(
                 1
               )}
@@ -788,7 +788,7 @@ export default async function MyTargetPage() {
 
       {/* PENDING */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <section className="glass-panel depth-card rounded-2xl p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h2 className="font-semibold text-white">
@@ -827,7 +827,7 @@ export default async function MyTargetPage() {
         </div>
 
         {pendingPlants > 0 && (
-          <p className="mt-5 border-t border-zinc-800 pt-4 text-sm text-zinc-500">
+          <p className="mt-5 border-t border-emerald-500/10 pt-4 text-sm text-zinc-500">
             Jika seluruh laporan
             pending disetujui,
             progress menjadi{" "}
@@ -847,8 +847,8 @@ export default async function MyTargetPage() {
 
       {/* HISTORY */}
 
-      <section className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/60">
-        <div className="border-b border-zinc-800 px-6 py-5">
+      <section className="overflow-hidden glass-panel depth-card rounded-2xl">
+        <div className="border-b border-emerald-500/10 px-6 py-5">
           <h2 className="font-semibold text-white">
             Riwayat Load Plant Periode Ini
           </h2>
@@ -882,7 +882,7 @@ export default async function MyTargetPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-zinc-800 bg-zinc-950/40 text-xs uppercase tracking-wide text-zinc-600">
+              <thead className="border-b border-emerald-500/10 bg-zinc-950/40 text-xs uppercase tracking-wide text-zinc-600">
                 <tr>
                   <th className="px-6 py-4">
                     Tanggal
@@ -921,7 +921,7 @@ export default async function MyTargetPage() {
                         key={
                           report.id
                         }
-                        className="hover:bg-zinc-900/50"
+                        className="hover:bg-emerald-950/25/50"
                       >
                         <td className="whitespace-nowrap px-6 py-4 text-zinc-300">
                           {formatDate(
@@ -982,7 +982,7 @@ export default async function MyTargetPage() {
 
       {/* INFO */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
+      <section className="rounded-2xl border border-emerald-500/15 bg-zinc-900/40 p-6">
         <h2 className="font-semibold text-white">
           Cara Progress Dihitung
         </h2>
@@ -1017,12 +1017,12 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <div className="glass-panel depth-card rounded-2xl p-5">
       <p className="text-sm text-zinc-500">
         {title}
       </p>
 
-      <p className="mt-2 text-2xl font-bold text-white">
+      <p className="mt-2 depth-title text-2xl font-bold text-white">
         {value}
       </p>
 
@@ -1045,7 +1045,7 @@ function SmallStat({
   value: string;
 }) {
   return (
-    <div className="min-w-[100px] rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-3">
+    <div className="min-w-[100px] depth-surface rounded-xl px-4 py-3">
       <p className="text-xs text-zinc-600">
         {label}
       </p>

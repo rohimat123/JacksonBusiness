@@ -155,7 +155,7 @@ export default async function MySSRPPage() {
             Laporan Saya
           </p>
 
-          <h1 className="mt-1 text-2xl font-bold text-white">
+          <h1 className="mt-1 depth-title text-2xl font-bold text-white">
             Riwayat SSRP Saya
           </h1>
 
@@ -199,8 +199,8 @@ export default async function MySSRPPage() {
 
       {/* REPORTS */}
 
-      <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950">
-        <div className="border-b border-zinc-800 px-5 py-4">
+      <div className="overflow-hidden depth-surface rounded-xl">
+        <div className="border-b border-emerald-500/10 px-5 py-4">
           <h2 className="font-semibold text-white">
             Laporan SSRP
           </h2>
@@ -262,7 +262,7 @@ export default async function MySSRPPage() {
                   )}
 
                   {report.evidence_url && (
-                    <div className="mt-4 overflow-hidden rounded-xl border border-zinc-800 bg-black">
+                    <div className="mt-4 overflow-hidden rounded-xl border border-emerald-500/15 bg-black">
                       <img
                         src={
                           report.evidence_url
@@ -290,14 +290,14 @@ function StatCard({
   value: number;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
+    <div className="depth-surface rounded-xl p-5">
       <p className="text-sm text-zinc-500">
         {
           label
         }
       </p>
 
-      <p className="mt-2 text-2xl font-bold text-white">
+      <p className="mt-2 depth-title text-2xl font-bold text-white">
         {
           value
         }

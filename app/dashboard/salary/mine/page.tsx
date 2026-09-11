@@ -433,7 +433,7 @@ if (
         </p>
 
         <div className="mt-1 flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-bold text-white">
+          <h1 className="depth-title text-3xl font-bold text-white">
             Gaji Saya
           </h1>
 
@@ -454,14 +454,14 @@ if (
 
       {/* EMPLOYEE */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <section className="glass-panel depth-card rounded-2xl p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-xs uppercase tracking-wide text-zinc-600">
               Pegawai
             </p>
 
-            <h2 className="mt-2 text-xl font-bold text-white">
+            <h2 className="mt-2 depth-number text-xl font-bold text-white">
               {employee.name}
             </h2>
 
@@ -583,8 +583,8 @@ if (
 
           {/* PAYROLL DETAIL */}
 
-          <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60">
-            <div className="border-b border-zinc-800 px-6 py-5">
+          <section className="glass-panel depth-card rounded-2xl">
+            <div className="border-b border-emerald-500/10 px-6 py-5">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <h2 className="font-semibold text-white">
@@ -688,7 +688,7 @@ if (
 
           {/* CALCULATION */}
 
-          <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+          <section className="glass-panel depth-card rounded-2xl p-6">
             <h2 className="font-semibold text-white">
               Perhitungan
             </h2>
@@ -721,7 +721,7 @@ if (
                 valueClass="text-red-400"
               />
 
-              <div className="border-t border-zinc-800 pt-4">
+              <div className="border-t border-emerald-500/10 pt-4">
                 <CalculationRow
                   label="Total Gaji"
                   value={formatMoney(
@@ -750,7 +750,7 @@ if (
           {/* NOTE */}
 
           {currentPayroll.payment_note && (
-            <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+            <section className="glass-panel depth-card rounded-2xl p-6">
               <p className="text-xs uppercase tracking-wide text-zinc-600">
                 Catatan Pembayaran
               </p>
@@ -797,8 +797,8 @@ if (
 
       {/* HISTORY */}
 
-      <section className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/60">
-        <div className="border-b border-zinc-800 px-6 py-5">
+      <section className="overflow-hidden glass-panel depth-card rounded-2xl">
+        <div className="border-b border-emerald-500/10 px-6 py-5">
           <h2 className="font-semibold text-white">
             Riwayat Gaji
           </h2>
@@ -821,7 +821,7 @@ if (
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-zinc-800 bg-zinc-950/40 text-xs uppercase tracking-wide text-zinc-600">
+              <thead className="border-b border-emerald-500/10 bg-zinc-950/40 text-xs uppercase tracking-wide text-zinc-600">
                 <tr>
                   <th className="px-6 py-4">
                     Periode
@@ -876,7 +876,7 @@ if (
                         key={
                           record.id
                         }
-                        className="transition hover:bg-zinc-900/50"
+                        className="transition hover:bg-emerald-950/25/50"
                       >
                         <td className="whitespace-nowrap px-6 py-4">
                           <p className="font-medium text-white">
@@ -970,7 +970,7 @@ if (
 
       {/* INFO */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
+      <section className="rounded-2xl border border-emerald-500/15 bg-zinc-900/40 p-6">
         <h2 className="font-semibold text-white">
           Informasi Gaji
         </h2>
@@ -1009,12 +1009,12 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <div className="glass-panel depth-card rounded-2xl p-5">
       <p className="text-sm text-zinc-500">
         {title}
       </p>
 
-      <p className="mt-2 text-2xl font-bold text-white">
+      <p className="mt-2 depth-title text-2xl font-bold text-white">
         {value}
       </p>
 
@@ -1083,7 +1083,7 @@ function CalculationRow({
       <p
         className={`${
           bold
-            ? "text-xl font-bold"
+            ? "depth-number text-xl font-bold"
             : "text-sm font-semibold"
         } ${valueClass}`}
       >

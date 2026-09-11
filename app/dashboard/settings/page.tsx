@@ -123,7 +123,7 @@ export default async function SettingsPage() {
           Administration
         </p>
 
-        <h1 className="mt-1 text-3xl font-bold text-white">
+        <h1 className="mt-1 depth-title text-3xl font-bold text-white">
           Settings
         </h1>
 

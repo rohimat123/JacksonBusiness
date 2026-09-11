@@ -625,7 +625,7 @@ export default async function MyDashboardPage() {
             Employee Portal
           </p>
 
-          <h1 className="mt-1 text-3xl font-bold text-white">
+          <h1 className="mt-1 depth-title text-3xl font-bold text-white">
             Dashboard Saya
           </h1>
 
@@ -639,7 +639,7 @@ export default async function MyDashboardPage() {
         </div>
 
         {activePeriod && (
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-3 lg:text-right">
+          <div className="rounded-xl border border-emerald-500/15 bg-zinc-900/60 px-4 py-3 lg:text-right">
             <p className="text-xs text-zinc-600">
               Periode Aktif
             </p>
@@ -664,14 +664,14 @@ export default async function MyDashboardPage() {
 
       {/* EMPLOYEE CARD */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <section className="glass-panel depth-card rounded-2xl p-6">
         <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-xs uppercase tracking-wide text-zinc-600">
               Pegawai
             </p>
 
-            <h2 className="mt-2 text-xl font-bold text-white">
+            <h2 className="mt-2 depth-number text-xl font-bold text-white">
               {employee.name}
             </h2>
 
@@ -772,14 +772,14 @@ export default async function MyDashboardPage() {
 
       {/* TARGET */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <section className="glass-panel depth-card rounded-2xl p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm text-zinc-500">
               Target Periode
             </p>
 
-            <p className="mt-2 text-2xl font-bold text-white">
+            <p className="mt-2 depth-title text-2xl font-bold text-white">
               {formatNumber(
                 approvedPlants
               )}
@@ -791,7 +791,7 @@ export default async function MyDashboardPage() {
           </div>
 
           <div className="sm:text-right">
-            <p className="text-2xl font-bold text-white">
+            <p className="depth-title text-2xl font-bold text-white">
               {targetPercentage.toFixed(
                 1
               )}
@@ -841,7 +841,7 @@ export default async function MyDashboardPage() {
       <div className="grid gap-6 xl:grid-cols-2">
         {/* SHIFT */}
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+        <section className="glass-panel depth-card rounded-2xl p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
               <h2 className="font-semibold text-white">
@@ -865,7 +865,7 @@ export default async function MyDashboardPage() {
 
           {nextShift &&
           nextShiftType ? (
-            <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-950/70 p-5">
+            <div className="mt-6 depth-surface rounded-xl p-5">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <p className="text-xs uppercase tracking-wide text-zinc-600">
@@ -876,7 +876,7 @@ export default async function MyDashboardPage() {
                         )}
                   </p>
 
-                  <p className="mt-2 text-xl font-bold text-white">
+                  <p className="mt-2 depth-number text-xl font-bold text-white">
                     {
                       nextShiftType.name
                     }
@@ -898,7 +898,7 @@ export default async function MyDashboardPage() {
               </div>
 
               {nextShift.note && (
-                <p className="mt-4 border-t border-zinc-800 pt-4 text-sm text-zinc-500">
+                <p className="mt-4 border-t border-emerald-500/10 pt-4 text-sm text-zinc-500">
                   {
                     nextShift.note
                   }
@@ -906,7 +906,7 @@ export default async function MyDashboardPage() {
               )}
             </div>
           ) : (
-            <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-950/60 p-8 text-center">
+            <div className="mt-6 depth-surface rounded-xl p-8 text-center">
               <p className="text-sm text-zinc-600">
                 Belum ada shift
                 berikutnya.
@@ -917,7 +917,7 @@ export default async function MyDashboardPage() {
 
         {/* SALARY */}
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+        <section className="glass-panel depth-card rounded-2xl p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
               <h2 className="font-semibold text-white">
@@ -945,7 +945,7 @@ export default async function MyDashboardPage() {
                     Total Gaji
                   </p>
 
-                  <p className="mt-2 text-3xl font-bold text-white">
+                  <p className="mt-2 depth-title text-3xl font-bold text-white">
                     {formatMoney(
                       salaryTotal
                     )}
@@ -994,7 +994,7 @@ export default async function MyDashboardPage() {
 
         {/* LOAD PLANT */}
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+        <section className="glass-panel depth-card rounded-2xl p-6">
           <div>
             <h2 className="font-semibold text-white">
               Load Plant
@@ -1047,7 +1047,7 @@ export default async function MyDashboardPage() {
 
         {/* SSRP */}
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+        <section className="glass-panel depth-card rounded-2xl p-6">
           <div>
             <h2 className="font-semibold text-white">
               Laporan SSRP
@@ -1095,7 +1095,7 @@ export default async function MyDashboardPage() {
 
       {/* QUICK LINKS */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <section className="glass-panel depth-card rounded-2xl p-6">
         <h2 className="font-semibold text-white">
           Akses Cepat
         </h2>
@@ -1144,12 +1144,12 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <div className="glass-panel depth-card rounded-2xl p-5">
       <p className="text-sm text-zinc-500">
         {title}
       </p>
 
-      <p className="mt-2 text-2xl font-bold text-white">
+      <p className="mt-2 depth-title text-2xl font-bold text-white">
         {value}
       </p>
 
@@ -1168,7 +1168,7 @@ function MiniCard({
   value: string;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-4">
+    <div className="depth-surface rounded-xl p-4">
       <p className="text-xs text-zinc-600">
         {label}
       </p>
@@ -1205,7 +1205,7 @@ function QuickLink({
   return (
     <Link
       href={href}
-      className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4 transition hover:border-zinc-700 hover:bg-zinc-900"
+      className="depth-surface rounded-xl p-4 transition hover:border-emerald-500/25 hover:bg-emerald-950/25"
     >
       <p className="font-semibold text-white">
         {title}

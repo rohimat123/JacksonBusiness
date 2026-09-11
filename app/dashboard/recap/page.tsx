@@ -139,7 +139,7 @@ export default async function RecapPage({
   if (!selectedPeriod) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-white">
+        <h1 className="depth-title text-2xl font-bold text-white">
           Rekap
         </h1>
 
@@ -564,7 +564,7 @@ export default async function RecapPage({
             Management
           </p>
 
-          <h1 className="mt-1 text-2xl font-bold text-white">
+          <h1 className="mt-1 depth-title text-2xl font-bold text-white">
             Rekap
           </h1>
 
@@ -613,7 +613,7 @@ export default async function RecapPage({
 
       {/* PERIOD */}
 
-      <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
+      <div className="depth-surface rounded-xl p-5">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-wide text-zinc-500">
@@ -708,8 +708,8 @@ export default async function RecapPage({
 
       {/* TABLE */}
 
-      <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950">
-        <div className="border-b border-zinc-800 px-5 py-4">
+      <div className="overflow-hidden depth-surface rounded-xl">
+        <div className="border-b border-emerald-500/10 px-5 py-4">
           <div className="flex items-center justify-between gap-4">
             <div>
               <h2 className="font-semibold text-white">
@@ -740,7 +740,7 @@ export default async function RecapPage({
           <div className="overflow-x-auto">
             <table className="min-w-[1200px] w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-zinc-800 bg-zinc-900/40 text-xs uppercase tracking-wide text-zinc-500">
+                <tr className="border-b border-emerald-500/10 bg-zinc-900/40 text-xs uppercase tracking-wide text-zinc-500">
                   <th className="px-5 py-4">
                     Pegawai
                   </th>
@@ -790,7 +790,7 @@ export default async function RecapPage({
                       key={
                         row.employee.id
                       }
-                      className="transition hover:bg-zinc-900/40"
+                      className="transition hover:bg-emerald-950/25/40"
                     >
                       <td className="px-5 py-4">
                         <p className="font-semibold text-white">
@@ -947,12 +947,12 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
+    <div className="depth-surface rounded-xl p-5">
       <p className="text-sm text-zinc-500">
         {title}
       </p>
 
-      <p className="mt-2 text-2xl font-bold text-white">
+      <p className="mt-2 depth-title text-2xl font-bold text-white">
         {value}
       </p>
 

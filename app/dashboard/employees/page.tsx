@@ -30,7 +30,7 @@ export default async function EmployeesPage() {
   if (error) {
     return (
       <div>
-        <h1 className="text-3xl font-bold">
+        <h1 className="depth-title text-3xl font-bold">
           Data Pegawai
         </h1>
 
@@ -94,7 +94,7 @@ export default async function EmployeesPage() {
             Pegawai
           </p>
 
-          <h1 className="mt-1 text-3xl font-bold">
+          <h1 className="mt-1 depth-title text-3xl font-bold">
             Data Pegawai
           </h1>
 
@@ -135,10 +135,10 @@ export default async function EmployeesPage() {
         />
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/60">
+      <div className="mt-6 overflow-hidden glass-panel depth-card rounded-2xl">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[900px] text-left">
-            <thead className="border-b border-zinc-800 bg-zinc-900">
+            <thead className="border-b border-emerald-500/10 bg-zinc-900">
               <tr className="text-xs uppercase tracking-wider text-zinc-500">
                 <th className="px-5 py-4">
                   Nama
@@ -184,7 +184,7 @@ export default async function EmployeesPage() {
                       key={
                         employee.id
                       }
-                      className="border-b border-zinc-800/70 last:border-b-0"
+                      className="border-b border-emerald-500/10/70 last:border-b-0"
                     >
                       <td className="px-5 py-4">
                         <p className="font-medium text-white">
@@ -271,12 +271,12 @@ function StatCard({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <div className="glass-panel depth-card rounded-2xl p-5">
       <p className="text-sm text-zinc-500">
         {title}
       </p>
 
-      <p className="mt-2 text-2xl font-bold">
+      <p className="mt-2 depth-title text-2xl font-bold">
         {value}
       </p>
     </div>

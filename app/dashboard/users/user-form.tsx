@@ -153,8 +153,8 @@ export default function UserForm({
   }
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950">
-      <div className="border-b border-zinc-800 px-5 py-4">
+    <div className="depth-surface rounded-xl">
+      <div className="border-b border-emerald-500/10 px-5 py-4">
         <h2 className="font-semibold text-white">
           Tambah User
         </h2>

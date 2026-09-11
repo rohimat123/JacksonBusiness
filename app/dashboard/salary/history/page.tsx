@@ -236,7 +236,7 @@ export default async function SalaryHistoryPage() {
           ← Kembali ke Gaji
         </Link>
 
-        <h1 className="mt-4 text-2xl font-bold text-white">
+        <h1 className="mt-4 depth-title text-2xl font-bold text-white">
           Riwayat Gaji
         </h1>
 
@@ -285,8 +285,8 @@ export default async function SalaryHistoryPage() {
 
       {/* PERIOD HISTORY */}
 
-      <section className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950/50">
-        <div className="border-b border-zinc-800 px-5 py-4">
+      <section className="overflow-hidden glass-panel depth-card rounded-2xl/50">
+        <div className="border-b border-emerald-500/10 px-5 py-4">
           <h2 className="font-semibold text-white">
             Riwayat Periode
           </h2>
@@ -294,7 +294,7 @@ export default async function SalaryHistoryPage() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-zinc-800 bg-zinc-900/40 text-xs uppercase tracking-wider text-zinc-500">
+            <thead className="border-b border-emerald-500/10 bg-zinc-900/40 text-xs uppercase tracking-wider text-zinc-500">
               <tr>
                 <th className="px-5 py-4">
                   Periode
@@ -354,7 +354,7 @@ export default async function SalaryHistoryPage() {
                       key={
                         period.id
                       }
-                      className="hover:bg-zinc-900/40"
+                      className="hover:bg-emerald-950/25/40"
                     >
                       <td className="px-5 py-4 font-medium text-white">
                         {
@@ -403,8 +403,8 @@ export default async function SalaryHistoryPage() {
 
       {/* PAYMENT HISTORY */}
 
-      <section className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950/50">
-        <div className="border-b border-zinc-800 px-5 py-4">
+      <section className="overflow-hidden glass-panel depth-card rounded-2xl/50">
+        <div className="border-b border-emerald-500/10 px-5 py-4">
           <h2 className="font-semibold text-white">
             History Pembayaran
           </h2>
@@ -418,7 +418,7 @@ export default async function SalaryHistoryPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-zinc-800 bg-zinc-900/40 text-xs uppercase tracking-wider text-zinc-500">
+              <thead className="border-b border-emerald-500/10 bg-zinc-900/40 text-xs uppercase tracking-wider text-zinc-500">
                 <tr>
                   <th className="px-5 py-4">
                     Pegawai
@@ -470,7 +470,7 @@ export default async function SalaryHistoryPage() {
                         key={
                           record.id
                         }
-                        className="hover:bg-zinc-900/40"
+                        className="hover:bg-emerald-950/25/40"
                       >
                         <td className="px-5 py-4">
                           <p className="font-medium text-white">
@@ -583,12 +583,12 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-5">
+    <div className="glass-panel depth-card rounded-2xl/50 p-5">
       <p className="text-sm text-zinc-500">
         {title}
       </p>
 
-      <p className="mt-2 text-2xl font-bold text-white">
+      <p className="mt-2 depth-title text-2xl font-bold text-white">
         {value}
       </p>
 

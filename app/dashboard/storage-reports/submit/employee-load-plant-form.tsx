@@ -760,7 +760,7 @@ export default function EmployeeLoadPlantForm({
             </button>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-zinc-800 bg-black">
+          <div className="overflow-hidden rounded-xl border border-emerald-500/15 bg-black">
             <img
               src={
                 previewUrl
@@ -826,7 +826,7 @@ function InfoBox({
   value: string;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+    <div className="depth-surface rounded-xl p-4">
       <p className="text-xs uppercase tracking-wide text-zinc-600">
         {label}
       </p>

@@ -165,7 +165,7 @@ export default async function MyLoadPlantPage() {
             Laporan Saya
           </p>
 
-          <h1 className="mt-1 text-2xl font-bold text-white">
+          <h1 className="mt-1 depth-title text-2xl font-bold text-white">
             Riwayat Load Plant Saya
           </h1>
 
@@ -220,7 +220,7 @@ export default async function MyLoadPlantPage() {
         />
       </div>
 
-      <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
+      <div className="depth-surface rounded-xl p-5">
         <div className="flex items-center justify-between text-sm">
           <span className="text-zinc-500">
             Target
@@ -255,8 +255,8 @@ export default async function MyLoadPlantPage() {
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950">
-        <div className="border-b border-zinc-800 px-5 py-4">
+      <div className="overflow-hidden depth-surface rounded-xl">
+        <div className="border-b border-emerald-500/10 px-5 py-4">
           <h2 className="font-semibold text-white">
             Laporan Load Plant
           </h2>
@@ -279,7 +279,7 @@ export default async function MyLoadPlantPage() {
                 >
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <p className="text-xl font-bold text-white">
+                      <p className="depth-number text-xl font-bold text-white">
                         {Number(
                           report.amount
                         ).toLocaleString(
@@ -319,7 +319,7 @@ export default async function MyLoadPlantPage() {
                   )}
 
                   {report.evidence_url && (
-                    <div className="mt-4 overflow-hidden rounded-xl border border-zinc-800 bg-black">
+                    <div className="mt-4 overflow-hidden rounded-xl border border-emerald-500/15 bg-black">
                       <img
                         src={
                           report.evidence_url
@@ -347,12 +347,12 @@ function StatCard({
   value: string;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
+    <div className="depth-surface rounded-xl p-5">
       <p className="text-sm text-zinc-500">
         {label}
       </p>
 
-      <p className="mt-2 text-2xl font-bold text-white">
+      <p className="mt-2 depth-title text-2xl font-bold text-white">
         {value}
       </p>
     </div>

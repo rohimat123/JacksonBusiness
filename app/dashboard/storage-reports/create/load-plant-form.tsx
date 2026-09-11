@@ -722,7 +722,7 @@ export default function LoadPlantForm({
             onChange={
               handleFileChange
             }
-            className="block w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-400 file:mr-4 file:rounded-lg file:border-0 file:bg-white file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black"
+            className="block w-full depth-input rounded-xl px-4 py-3 text-sm text-zinc-400 file:mr-4 file:rounded-lg file:border-0 file:bg-white file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black"
           />
 
           <p className="text-xs text-zinc-600">
@@ -765,7 +765,7 @@ export default function LoadPlantForm({
           </div>
 
           {previewUrl && (
-            <div className="mt-4 overflow-hidden rounded-xl border border-zinc-800 bg-black">
+            <div className="mt-4 overflow-hidden rounded-xl border border-emerald-500/15 bg-black">
               <img
                 src={
                   previewUrl
@@ -918,4 +918,4 @@ function getJakartaDate() {
 // ============================================================
 
 const inputClass =
-  "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-zinc-500";
+  "w-full depth-input rounded-xl px-4 py-3 text-sm text-white outline-none transition focus:border-zinc-500";

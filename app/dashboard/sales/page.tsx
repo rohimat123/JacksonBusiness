@@ -114,7 +114,7 @@ export default async function SalesPage() {
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="depth-title text-2xl font-bold text-white">
             Penjualan
           </h1>
 
@@ -161,8 +161,8 @@ export default async function SalesPage() {
 
       {/* TABLE */}
 
-      <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950/50">
-        <div className="border-b border-zinc-800 px-5 py-4">
+      <div className="overflow-hidden glass-panel depth-card rounded-2xl/50">
+        <div className="border-b border-emerald-500/10 px-5 py-4">
           <h2 className="font-semibold text-white">
             Riwayat Penjualan
           </h2>
@@ -184,7 +184,7 @@ export default async function SalesPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-zinc-800 bg-zinc-900/40 text-xs uppercase tracking-wider text-zinc-500">
+              <thead className="border-b border-emerald-500/10 bg-zinc-900/40 text-xs uppercase tracking-wider text-zinc-500">
                 <tr>
                   <th className="px-5 py-4">
                     Tanggal
@@ -229,7 +229,7 @@ export default async function SalesPage() {
                   return (
                     <tr
                       key={sale.id}
-                      className="transition hover:bg-zinc-900/40"
+                      className="transition hover:bg-emerald-950/25/40"
                     >
                       <td className="whitespace-nowrap px-5 py-4 text-zinc-300">
                         {formatDate(sale.sale_date)}
@@ -307,12 +307,12 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-5">
+    <div className="glass-panel depth-card rounded-2xl/50 p-5">
       <p className="text-sm text-zinc-500">
         {title}
       </p>
 
-      <p className="mt-2 text-2xl font-bold text-white">
+      <p className="mt-2 depth-title text-2xl font-bold text-white">
         {value}
       </p>
 

@@ -93,7 +93,7 @@ export default async function TargetsPage({
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="depth-title text-2xl font-bold text-white">
             Target Pegawai
           </h1>
 
@@ -348,7 +348,7 @@ export default async function TargetsPage({
             Pegawai
           </p>
 
-          <h1 className="mt-1 text-2xl font-bold text-white">
+          <h1 className="mt-1 depth-title text-2xl font-bold text-white">
             Target Pegawai
           </h1>
 
@@ -393,7 +393,7 @@ export default async function TargetsPage({
 
       {/* PERIOD INFO */}
 
-      <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
+      <div className="depth-surface rounded-xl p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs uppercase tracking-wide text-zinc-500">
@@ -474,7 +474,7 @@ export default async function TargetsPage({
               key={
                 row.employee.id
               }
-              className="rounded-xl border border-zinc-800 bg-zinc-950 p-5"
+              className="depth-surface rounded-xl p-5"
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
@@ -588,12 +588,12 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
+    <div className="depth-surface rounded-xl p-5">
       <p className="text-sm text-zinc-500">
         {title}
       </p>
 
-      <p className="mt-2 text-2xl font-bold text-white">
+      <p className="mt-2 depth-title text-2xl font-bold text-white">
         {value}
       </p>
 
@@ -612,7 +612,7 @@ function MiniStat({
   value: string;
 }) {
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3">
+    <div className="rounded-lg border border-emerald-500/15 bg-zinc-900/40 p-3">
       <p className="text-xs uppercase tracking-wide text-zinc-600">
         {label}
       </p>

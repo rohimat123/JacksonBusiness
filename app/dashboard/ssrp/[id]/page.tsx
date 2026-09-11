@@ -66,7 +66,7 @@ export default async function SSRPDetailPage({
             ← Kembali ke SSRP
           </Link>
 
-          <h1 className="mt-4 text-2xl font-bold text-white">
+          <h1 className="mt-4 depth-title text-2xl font-bold text-white">
             Detail SSRP
           </h1>
         </div>
@@ -81,7 +81,7 @@ export default async function SSRPDetailPage({
         )}
       </div>
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-6">
+      <section className="glass-panel depth-card rounded-2xl/50 p-6">
         <p className="text-xs uppercase tracking-wider text-zinc-600">
           Status
         </p>
@@ -107,7 +107,7 @@ export default async function SSRPDetailPage({
       </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-6">
+        <section className="glass-panel depth-card rounded-2xl/50 p-6">
           <h2 className="font-semibold text-white">
             Pegawai
           </h2>
@@ -147,7 +147,7 @@ export default async function SSRPDetailPage({
           </div>
         </section>
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-6">
+        <section className="glass-panel depth-card rounded-2xl/50 p-6">
           <h2 className="font-semibold text-white">
             Informasi SSRP
           </h2>
@@ -186,14 +186,14 @@ export default async function SSRPDetailPage({
           </section>
         )}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-6">
+      <section className="glass-panel depth-card rounded-2xl/50 p-6">
         <h2 className="font-semibold text-white">
           Screenshot SSRP
         </h2>
 
         <div className="mt-5">
           {report.evidence_url ? (
-            <div className="overflow-hidden rounded-xl border border-zinc-800 bg-black">
+            <div className="overflow-hidden rounded-xl border border-emerald-500/15 bg-black">
               <img
                 src={
                   report.evidence_url

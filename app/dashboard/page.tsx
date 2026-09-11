@@ -1,7 +1,30 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import {
+  redirect,
+} from "next/navigation";
 
-import { createClient } from "@/lib/supabase/server";
+import {
+  BadgeCheck,
+  CalendarDays,
+  CircleDollarSign,
+  Clock3,
+  Database,
+  Info,
+  Leaf,
+  PackageOpen,
+  ScrollText,
+  Sprout,
+  Target,
+  Users,
+} from "lucide-react";
+
+import type {
+  LucideIcon,
+} from "lucide-react";
+
+import {
+  createClient,
+} from "@/lib/supabase/server";
 
 import EmployeePeriodSelector from "./employee-period-selector";
 
@@ -31,14 +54,19 @@ type EmployeeRow = {
   position?: string | null;
   join_date?: string | null;
   status: string;
-  target_plants: number | string | null;
+  target_plants:
+    | number
+    | string
+    | null;
 };
 
 type LoadPlantReport = {
   id: string;
   employee_id: string;
   seed: string;
-  amount: number | string;
+  amount:
+    | number
+    | string;
   status: string;
   report_date: string;
   created_at?: string;
@@ -55,22 +83,46 @@ type SSRPReport = {
 
 type PayrollRecord = {
   id: string;
-  approved_plants: number | string | null;
-  rate_per_plant: number | string | null;
-  gross_salary: number | string | null;
-  bonus: number | string | null;
-  fine: number | string | null;
-  total_salary: number | string | null;
+  approved_plants:
+    | number
+    | string
+    | null;
+  rate_per_plant:
+    | number
+    | string
+    | null;
+  gross_salary:
+    | number
+    | string
+    | null;
+  bonus:
+    | number
+    | string
+    | null;
+  fine:
+    | number
+    | string
+    | null;
+  total_salary:
+    | number
+    | string
+    | null;
   status: string | null;
   paid_at: string | null;
-  payment_note: string | null;
+  payment_note:
+    | string
+    | null;
 };
 
 type SaleReport = {
   id: string;
   seed: string;
-  quantity: number | string;
-  total_amount: number | string;
+  quantity:
+    | number
+    | string;
+  total_amount:
+    | number
+    | string;
   status: string;
   sale_date: string;
 };
@@ -91,10 +143,6 @@ export default async function DashboardPage({
   const requestedPeriodId =
     params?.period ?? "";
 
-  // ==========================================================
-  // AUTH
-  // ==========================================================
-
   const {
     data: { user },
     error: userError,
@@ -107,10 +155,6 @@ export default async function DashboardPage({
   ) {
     redirect("/login");
   }
-
-  // ==========================================================
-  // PROFILE
-  // ==========================================================
 
   const {
     data: profile,
@@ -148,16 +192,15 @@ export default async function DashboardPage({
       profile.role ?? ""
     ).toUpperCase();
 
-  // ==========================================================
-  // EMPLOYEE DASHBOARD
-  // ==========================================================
-
   if (
-    role === "EMPLOYEE"
+    role ===
+    "EMPLOYEE"
   ) {
     return (
       <EmployeeDashboard
-        userId={user.id}
+        userId={
+          user.id
+        }
         fullName={
           profile.full_name ??
           "Employee"
@@ -169,10 +212,6 @@ export default async function DashboardPage({
     );
   }
 
-  // ==========================================================
-  // OWNER / MANAGER
-  // ==========================================================
-
   return (
     <ManagementDashboard
       requestedPeriodId={
@@ -183,7 +222,7 @@ export default async function DashboardPage({
 }
 
 // ============================================================
-// EMPLOYEE DASHBOARD
+// EMPLOYEE
 // ============================================================
 
 async function EmployeeDashboard({
@@ -198,72 +237,71 @@ async function EmployeeDashboard({
   const supabase =
     await createClient();
 
-  // ==========================================================
-  // STEP 1
-  // SETTINGS + EMPLOYEE + PERIODS JALAN BARENG
-  // ==========================================================
-
   const [
     settingsResult,
     employeeResult,
     periodsResult,
-  ] = await Promise.all([
-    supabase
-      .from("system_settings")
-      .select(`
-        storage_capacity,
-        payroll_rate,
-        ssrp_rate,
-        default_target_plants,
-        payroll_period_days
-      `)
-      .limit(1)
-      .maybeSingle(),
+  ] =
+    await Promise.all([
+      supabase
+        .from(
+          "system_settings"
+        )
+        .select(`
+          storage_capacity,
+          payroll_rate,
+          ssrp_rate,
+          default_target_plants,
+          payroll_period_days
+        `)
+        .limit(1)
+        .maybeSingle(),
 
-    supabase
-      .from("employees")
-      .select(`
-        id,
-        profile_id,
-        name,
-        forum_name,
-        seed,
-        position,
-        join_date,
-        status,
-        target_plants
-      `)
-      .eq(
-        "profile_id",
-        userId
-      )
-      .maybeSingle(),
+      supabase
+        .from(
+          "employees"
+        )
+        .select(`
+          id,
+          profile_id,
+          name,
+          forum_name,
+          seed,
+          position,
+          join_date,
+          status,
+          target_plants
+        `)
+        .eq(
+          "profile_id",
+          userId
+        )
+        .maybeSingle(),
 
-    supabase
-      .from("payroll_periods")
-      .select(`
-        id,
-        period_start,
-        period_end,
-        status
-      `)
-      .order(
-        "period_start",
-        {
-          ascending: true,
-        }
-      ),
-  ]);
-
-  // ==========================================================
-  // ERROR CHECK
-  // ==========================================================
+      supabase
+        .from(
+          "payroll_periods"
+        )
+        .select(`
+          id,
+          period_start,
+          period_end,
+          status
+        `)
+        .order(
+          "period_start",
+          {
+            ascending: true,
+          }
+        ),
+    ]);
 
   if (
     settingsResult.error
   ) {
     throw new Error(
-      settingsResult.error.message
+      settingsResult.error
+        .message
     );
   }
 
@@ -271,7 +309,8 @@ async function EmployeeDashboard({
     employeeResult.error
   ) {
     throw new Error(
-      employeeResult.error.message
+      employeeResult.error
+        .message
     );
   }
 
@@ -279,13 +318,10 @@ async function EmployeeDashboard({
     periodsResult.error
   ) {
     throw new Error(
-      periodsResult.error.message
+      periodsResult.error
+        .message
     );
   }
-
-  // ==========================================================
-  // EMPLOYEE
-  // ==========================================================
 
   const employee =
     employeeResult.data as
@@ -295,7 +331,7 @@ async function EmployeeDashboard({
   if (!employee) {
     return (
       <div className="mx-auto max-w-7xl">
-        <div className="rounded-2xl border border-yellow-900/50 bg-yellow-950/20 p-6">
+        <div className="glass-panel rounded-2xl border-yellow-500/20 p-6">
           <h1 className="text-xl font-bold text-yellow-400">
             Akun belum terhubung
           </h1>
@@ -311,10 +347,6 @@ async function EmployeeDashboard({
     );
   }
 
-  // ==========================================================
-  // SETTINGS
-  // ==========================================================
-
   const payrollRate =
     Number(
       settingsResult.data
@@ -328,10 +360,6 @@ async function EmployeeDashboard({
         ?.ssrp_rate ??
         200
     ) || 200;
-
-  // ==========================================================
-  // PERIODS
-  // ==========================================================
 
   const periods =
     (
@@ -390,140 +418,8 @@ async function EmployeeDashboard({
       null;
   }
 
-  // ==========================================================
-  // STEP 2
-  // LOAD + SSRP + PAYROLL + SHIFT JALAN BARENG
-  // ==========================================================
-
   const today =
     getLocalDateString();
-
-  let loadPromise:
-    PromiseLike<any>;
-
-  let ssrpPromise:
-    PromiseLike<any>;
-
-  let payrollPromise:
-    PromiseLike<any>;
-
-  if (
-    selectedPeriod
-  ) {
-    loadPromise =
-      supabase
-        .from(
-          "load_plant_reports"
-        )
-        .select(`
-          id,
-          employee_id,
-          seed,
-          amount,
-          status,
-          report_date,
-          created_at
-        `)
-        .eq(
-          "employee_id",
-          employee.id
-        )
-        .gte(
-          "report_date",
-          selectedPeriod.period_start
-        )
-        .lte(
-          "report_date",
-          selectedPeriod.period_end
-        )
-        .order(
-          "created_at",
-          {
-            ascending: false,
-          }
-        );
-
-    ssrpPromise =
-      supabase
-        .from(
-          "ssrp_reports"
-        )
-        .select(`
-          id,
-          employee_id,
-          activity,
-          report_date,
-          status,
-          created_at
-        `)
-        .eq(
-          "employee_id",
-          employee.id
-        )
-        .gte(
-          "report_date",
-          selectedPeriod.period_start
-        )
-        .lte(
-          "report_date",
-          selectedPeriod.period_end
-        )
-        .order(
-          "created_at",
-          {
-            ascending: false,
-          }
-        );
-
-    payrollPromise =
-      supabase
-        .from(
-          "payroll_records"
-        )
-        .select(`
-          id,
-          approved_plants,
-          rate_per_plant,
-          gross_salary,
-          bonus,
-          fine,
-          total_salary,
-          status,
-          paid_at,
-          payment_note
-        `)
-        .eq(
-          "employee_id",
-          employee.id
-        )
-        .eq(
-          "period_start",
-          selectedPeriod.period_start
-        )
-        .eq(
-          "period_end",
-          selectedPeriod.period_end
-        )
-        .maybeSingle();
-  } else {
-    loadPromise =
-      Promise.resolve({
-        data: [],
-        error: null,
-      });
-
-    ssrpPromise =
-      Promise.resolve({
-        data: [],
-        error: null,
-      });
-
-    payrollPromise =
-      Promise.resolve({
-        data: null,
-        error: null,
-      });
-  }
 
   const shiftPromise =
     supabase
@@ -551,64 +447,199 @@ async function EmployeeDashboard({
       )
       .maybeSingle();
 
-  const [
-    loadResult,
-    ssrpResult,
-    payrollResult,
-    shiftResult,
-  ] =
-    await Promise.all([
-      loadPromise,
-      ssrpPromise,
-      payrollPromise,
-      shiftPromise,
-    ]);
+  let loadReports:
+    LoadPlantReport[] =
+      [];
 
-  // ==========================================================
-  // ERRORS
-  // ==========================================================
+  let ssrpReports:
+    SSRPReport[] =
+      [];
 
-  if (
-    loadResult.error
-  ) {
-    throw new Error(
-      loadResult.error.message
-    );
-  }
+  let payroll:
+    PayrollRecord | null =
+      null;
+
+  let todayShift:
+    any =
+      null;
 
   if (
-    ssrpResult.error
+    selectedPeriod
   ) {
-    throw new Error(
-      ssrpResult.error.message
-    );
+    const [
+      loadResult,
+      ssrpResult,
+      payrollResult,
+      shiftResult,
+    ] =
+      await Promise.all([
+        supabase
+          .from(
+            "load_plant_reports"
+          )
+          .select(`
+            id,
+            employee_id,
+            seed,
+            amount,
+            status,
+            report_date,
+            created_at
+          `)
+          .eq(
+            "employee_id",
+            employee.id
+          )
+          .gte(
+            "report_date",
+            selectedPeriod.period_start
+          )
+          .lte(
+            "report_date",
+            selectedPeriod.period_end
+          )
+          .order(
+            "created_at",
+            {
+              ascending: false,
+            }
+          ),
+
+        supabase
+          .from(
+            "ssrp_reports"
+          )
+          .select(`
+            id,
+            employee_id,
+            activity,
+            report_date,
+            status,
+            created_at
+          `)
+          .eq(
+            "employee_id",
+            employee.id
+          )
+          .gte(
+            "report_date",
+            selectedPeriod.period_start
+          )
+          .lte(
+            "report_date",
+            selectedPeriod.period_end
+          )
+          .order(
+            "created_at",
+            {
+              ascending: false,
+            }
+          ),
+
+        supabase
+          .from(
+            "payroll_records"
+          )
+          .select(`
+            id,
+            approved_plants,
+            rate_per_plant,
+            gross_salary,
+            bonus,
+            fine,
+            total_salary,
+            status,
+            paid_at,
+            payment_note
+          `)
+          .eq(
+            "employee_id",
+            employee.id
+          )
+          .eq(
+            "period_start",
+            selectedPeriod.period_start
+          )
+          .eq(
+            "period_end",
+            selectedPeriod.period_end
+          )
+          .maybeSingle(),
+
+        shiftPromise,
+      ]);
+
+    if (
+      loadResult.error
+    ) {
+      throw new Error(
+        loadResult.error
+          .message
+      );
+    }
+
+    if (
+      ssrpResult.error
+    ) {
+      throw new Error(
+        ssrpResult.error
+          .message
+      );
+    }
+
+    if (
+      payrollResult.error
+    ) {
+      throw new Error(
+        payrollResult.error
+          .message
+      );
+    }
+
+    if (
+      shiftResult.error
+    ) {
+      throw new Error(
+        shiftResult.error
+          .message
+      );
+    }
+
+    loadReports =
+      (
+        loadResult.data ??
+        []
+      ) as LoadPlantReport[];
+
+    ssrpReports =
+      (
+        ssrpResult.data ??
+        []
+      ) as SSRPReport[];
+
+    payroll =
+      payrollResult.data as
+        | PayrollRecord
+        | null;
+
+    todayShift =
+      shiftResult.data;
+  } else {
+    const shiftResult =
+      await shiftPromise;
+
+    if (
+      shiftResult.error
+    ) {
+      throw new Error(
+        shiftResult.error
+          .message
+      );
+    }
+
+    todayShift =
+      shiftResult.data;
   }
-
-  if (
-    payrollResult.error
-  ) {
-    throw new Error(
-      payrollResult.error.message
-    );
-  }
-
-  if (
-    shiftResult.error
-  ) {
-    throw new Error(
-      shiftResult.error.message
-    );
-  }
-
-  // ==========================================================
-  // LOAD PLANT
-  // ==========================================================
-
-  const loadReports =
-    (
-      loadResult.data ??
-      []
-    ) as LoadPlantReport[];
 
   const approvedLoad =
     loadReports.filter(
@@ -651,15 +682,11 @@ async function EmployeeDashboard({
       0
     );
 
-  // ==========================================================
-  // TARGET
-  // ==========================================================
-
   const targetPlants =
     Number(
       employee.target_plants ??
       0
-    ) || 0;
+    );
 
   const remainingPlants =
     Math.max(
@@ -678,16 +705,6 @@ async function EmployeeDashboard({
           ) * 100
         )
       : 0;
-
-  // ==========================================================
-  // SSRP
-  // ==========================================================
-
-  const ssrpReports =
-    (
-      ssrpResult.data ??
-      []
-    ) as SSRPReport[];
 
   const approvedSSRP =
     ssrpReports.filter(
@@ -715,15 +732,6 @@ async function EmployeeDashboard({
         ).toUpperCase() ===
         "REJECTED"
     ).length;
-
-  // ==========================================================
-  // PAYROLL
-  // ==========================================================
-
-  const payroll =
-    payrollResult.data as
-      | PayrollRecord
-      | null;
 
   const estimatedSalary =
     approvedPlants *
@@ -771,13 +779,6 @@ async function EmployeeDashboard({
         ).toUpperCase()
       : "ESTIMASI";
 
-  // ==========================================================
-  // SHIFT
-  // ==========================================================
-
-  const todayShift =
-    shiftResult.data;
-
   const shiftRelation =
     todayShift
       ?.shift_types;
@@ -791,10 +792,6 @@ async function EmployeeDashboard({
       : shiftRelation ??
         null;
 
-  // ==========================================================
-  // LATEST
-  // ==========================================================
-
   const latestLoad =
     loadReports[0] ??
     null;
@@ -802,10 +799,6 @@ async function EmployeeDashboard({
   const latestSSRP =
     ssrpReports[0] ??
     null;
-
-  // ==========================================================
-  // PERIOD NUMBER
-  // ==========================================================
 
   const selectedPeriodIndex =
     selectedPeriod
@@ -822,21 +815,18 @@ async function EmployeeDashboard({
         1
       : 0;
 
-  // ==========================================================
-  // UI
-  // ==========================================================
-
   return (
     <div className="mx-auto max-w-7xl space-y-6">
+
       {/* HEADER */}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-emerald-300/50">
             Employee Portal
           </p>
 
-          <h1 className="mt-1 text-3xl font-bold text-white">
+          <h1 className="mt-1 text-3xl font-bold">
             Dashboard Saya
           </h1>
 
@@ -863,14 +853,21 @@ async function EmployeeDashboard({
       {/* PERIOD */}
 
       {selectedPeriod && (
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-wide text-zinc-600">
+        <section className="glass-panel green-glow rounded-2xl p-5">
+          <div className="flex items-center gap-4">
+            <IconBox
+              icon={
+                CalendarDays
+              }
+              accent="green"
+            />
+
+            <div className="flex-1">
+              <p className="text-xs uppercase tracking-wide text-emerald-300/35">
                 Periode Aktif Tampilan
               </p>
 
-              <p className="mt-2 text-lg font-bold text-white">
+              <p className="mt-1 text-lg font-bold">
                 Periode #
                 {
                   selectedPeriodNumber
@@ -879,21 +876,18 @@ async function EmployeeDashboard({
 
               <p className="mt-1 text-sm text-zinc-500">
                 {formatDate(
-                  selectedPeriod
-                    .period_start
+                  selectedPeriod.period_start
                 )}
                 {" - "}
                 {formatDate(
-                  selectedPeriod
-                    .period_end
+                  selectedPeriod.period_end
                 )}
               </p>
             </div>
 
             <StatusBadge
               status={
-                selectedPeriod
-                  .status
+                selectedPeriod.status
               }
             />
           </div>
@@ -902,14 +896,21 @@ async function EmployeeDashboard({
 
       {/* PROFILE */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+      <section className="glass-panel rounded-2xl p-6">
+        <div className="flex items-center gap-4">
+          <IconBox
+            icon={
+              Users
+            }
+            accent="green"
+          />
+
           <div>
             <p className="text-xs uppercase tracking-wider text-zinc-600">
               Pegawai
             </p>
 
-            <h2 className="mt-2 text-2xl font-bold text-white">
+            <h2 className="mt-1 text-xl font-bold">
               {employee.name}
             </h2>
 
@@ -928,23 +929,7 @@ async function EmployeeDashboard({
                 employee.status
               }
             </p>
-
-            {employee.forum_name && (
-              <p className="mt-1 text-xs text-zinc-600">
-                Forum:{" "}
-                {
-                  employee
-                    .forum_name
-                }
-              </p>
-            )}
           </div>
-
-          <StatusBadge
-            status={
-              employee.status
-            }
-          />
         </div>
       </section>
 
@@ -952,6 +937,8 @@ async function EmployeeDashboard({
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
+          icon={Sprout}
+          accent="green"
           title="Approved Plants"
           value={
             approvedPlants
@@ -959,14 +946,12 @@ async function EmployeeDashboard({
                 "en-US"
               )
           }
-          description={
-            selectedPeriod
-              ? `Periode #${selectedPeriodNumber}`
-              : "Belum ada periode"
-          }
+          description={`Periode #${selectedPeriodNumber}`}
         />
 
         <StatCard
+          icon={Target}
+          accent="red"
           title="Sisa Target"
           value={
             remainingPlants
@@ -980,6 +965,8 @@ async function EmployeeDashboard({
         />
 
         <StatCard
+          icon={BadgeCheck}
+          accent="purple"
           title="SSRP Approved"
           value={
             String(
@@ -989,120 +976,85 @@ async function EmployeeDashboard({
           description={`${pendingSSRP} pending`}
         />
 
-        <SalaryStatCard
-          payroll={
-            Boolean(
-              payroll
+        <StatCard
+          icon={
+            CircleDollarSign
+          }
+          accent="blue"
+          title={
+            payroll
+              ? "Gaji Saat Ini"
+              : "Estimasi Gaji"
+          }
+          value={
+            formatMoney(
+              payrollTotal
             )
           }
-          total={
-            payrollTotal
-          }
-          status={
-            payrollStatus
-          }
-          gross={
-            payrollGross
-          }
-          bonus={
-            payrollBonus
-          }
-          fine={
-            payrollFine
-          }
-          payrollRate={
-            payrollRate
-          }
-          ssrpRate={
-            ssrpRate
+          description={
+            payroll
+              ? payrollStatus
+              : `${formatMoney(
+                  payrollRate
+                )} / plant`
           }
         />
       </div>
 
       {/* TARGET */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 className="font-semibold text-white">
-              Target Saya
-            </h2>
+      <section className="glass-panel rounded-2xl p-6">
+        <SectionTitle
+          icon={Target}
+          accent="red"
+          title="Target Saya"
+          description="Progress Load Plant APPROVED pada periode yang dipilih."
+        />
 
-            <p className="mt-1 text-sm text-zinc-500">
-              Progress berdasarkan
-              Load Plant APPROVED
-              pada periode yang
-              dipilih.
-            </p>
-          </div>
+        <div className="mt-6 flex items-end justify-between">
+          <p className="text-xl font-bold">
+            {approvedPlants.toLocaleString(
+              "en-US"
+            )}
+            {" / "}
+            {targetPlants.toLocaleString(
+              "en-US"
+            )}
+          </p>
 
-          <div className="sm:text-right">
-            <p className="text-lg font-bold text-white">
-              {approvedPlants.toLocaleString(
-                "en-US"
-              )}
-              {" / "}
-              {targetPlants.toLocaleString(
-                "en-US"
-              )}
-            </p>
-
-            <p className="mt-1 text-xs text-zinc-500">
-              {progress.toFixed(
-                1
-              )}
-              %
-            </p>
-          </div>
+          <p className="text-sm text-emerald-300/60">
+            {progress.toFixed(
+              1
+            )}
+            %
+          </p>
         </div>
 
-        <div className="mt-5 h-3 overflow-hidden rounded-full bg-zinc-800">
-          <div
-            className="h-full rounded-full bg-white"
-            style={{
-              width:
-                `${progress}%`,
-            }}
-          />
-        </div>
-
-        <p className="mt-3 text-xs text-zinc-600">
-          Sisa{" "}
-          {remainingPlants.toLocaleString(
-            "en-US"
-          )}{" "}
-          Plants
-        </p>
+        <ProgressBar
+          percentage={
+            progress
+          }
+        />
       </section>
 
       {/* SHIFT */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h2 className="font-semibold text-white">
-              Shift Saya Hari Ini
-            </h2>
-
-            <p className="mt-1 text-sm text-zinc-500">
-              {formatDate(
-                today
-              )}
-            </p>
-          </div>
-
-          <Link
-            href="/dashboard/shifts/mine"
-            className="text-xs text-zinc-400 hover:text-white"
-          >
-            Lihat Jadwal →
-          </Link>
-        </div>
+      <section className="glass-panel rounded-2xl p-6">
+        <SectionTitle
+          icon={Clock3}
+          accent="blue"
+          title="Shift Saya Hari Ini"
+          description={
+            formatDate(
+              today
+            )
+          }
+        />
 
         <div className="mt-5">
           {todayShift ? (
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-5">
-              <p className="text-xl font-bold text-white">
+            <div className="rounded-xl border border-emerald-500/10 bg-black/20 p-5">
+              <p className="text-xl font-bold">
                 {
                   shiftType
                     ?.name ??
@@ -1126,332 +1078,151 @@ async function EmployeeDashboard({
                     )}
                   </p>
                 )}
-
-              {todayShift
-                .note && (
-                <p className="mt-3 text-sm text-zinc-400">
-                  {
-                    todayShift
-                      .note
-                  }
-                </p>
-              )}
             </div>
           ) : (
             <EmptyText text="Belum ada shift untuk hari ini." />
           )}
         </div>
+
+        <Link
+          href="/dashboard/shifts/mine"
+          prefetch={false}
+          className="mt-4 inline-block text-xs text-emerald-300/60 hover:text-emerald-300"
+        >
+          Lihat Jadwal →
+        </Link>
       </section>
 
       {/* REPORTS */}
 
       <div className="grid gap-6 xl:grid-cols-2">
-        {/* LOAD */}
+        <ReportCard
+          title="Load Plant Saya"
+          icon={Sprout}
+          pending={
+            pendingLoad.length
+          }
+          approved={
+            approvedLoad.length
+          }
+          rejected={
+            rejectedLoad.length
+          }
+          latest={
+            latestLoad
+              ? `${Number(
+                  latestLoad.amount
+                ).toLocaleString(
+                  "en-US"
+                )} Plants`
+              : null
+          }
+          latestStatus={
+            latestLoad?.status
+          }
+          historyHref="/dashboard/storage-reports/mine"
+          submitHref="/dashboard/storage-reports/submit"
+          submitLabel="+ Kirim Load Plant"
+        />
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="font-semibold">
-                Load Plant Saya
-              </h2>
-
-              <p className="mt-1 text-sm text-zinc-500">
-                Periode #
-                {
-                  selectedPeriodNumber
-                }
-              </p>
-            </div>
-
-            <Link
-              href="/dashboard/storage-reports/mine"
-              className="text-xs text-zinc-400 hover:text-white"
-            >
-              Riwayat →
-            </Link>
-          </div>
-
-          <div className="mt-6 grid grid-cols-3 gap-3">
-            <MiniStat
-              label="Pending"
-              value={
-                pendingLoad
-                  .length
-              }
-            />
-
-            <MiniStat
-              label="Approved"
-              value={
-                approvedLoad
-                  .length
-              }
-            />
-
-            <MiniStat
-              label="Rejected"
-              value={
-                rejectedLoad
-                  .length
-              }
-            />
-          </div>
-
-          <div className="mt-5">
-            {latestLoad ? (
-              <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="font-semibold">
-                      {Number(
-                        latestLoad
-                          .amount
-                      ).toLocaleString(
-                        "en-US"
-                      )}{" "}
-                      Plants
-                    </p>
-
-                    <p className="mt-1 text-xs text-zinc-600">
-                      {formatDate(
-                        latestLoad
-                          .report_date
-                      )}
-                    </p>
-                  </div>
-
-                  <StatusBadge
-                    status={
-                      latestLoad
-                        .status
-                    }
-                  />
-                </div>
-              </div>
-            ) : (
-              <EmptyText text="Belum ada laporan Load Plant di periode ini." />
-            )}
-          </div>
-
-          <Link
-            href="/dashboard/storage-reports/submit"
-            className="mt-5 block rounded-xl bg-white px-4 py-3 text-center text-sm font-semibold text-black hover:bg-zinc-200"
-          >
-            + Kirim Load Plant
-          </Link>
-        </section>
-
-        {/* SSRP */}
-
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="font-semibold">
-                SSRP Saya
-              </h2>
-
-              <p className="mt-1 text-sm text-zinc-500">
-                Periode #
-                {
-                  selectedPeriodNumber
-                }
-              </p>
-            </div>
-
-            <Link
-              href="/dashboard/ssrp/mine"
-              className="text-xs text-zinc-400 hover:text-white"
-            >
-              Riwayat →
-            </Link>
-          </div>
-
-          <div className="mt-6 grid grid-cols-3 gap-3">
-            <MiniStat
-              label="Pending"
-              value={
-                pendingSSRP
-              }
-            />
-
-            <MiniStat
-              label="Approved"
-              value={
-                approvedSSRP
-              }
-            />
-
-            <MiniStat
-              label="Rejected"
-              value={
-                rejectedSSRP
-              }
-            />
-          </div>
-
-          <div className="mt-5">
-            {latestSSRP ? (
-              <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="font-semibold">
-                      {
-                        latestSSRP
-                          .activity
-                      }
-                    </p>
-
-                    <p className="mt-1 text-xs text-zinc-600">
-                      {formatDate(
-                        latestSSRP
-                          .report_date
-                      )}
-                    </p>
-                  </div>
-
-                  <StatusBadge
-                    status={
-                      latestSSRP
-                        .status
-                    }
-                  />
-                </div>
-              </div>
-            ) : (
-              <EmptyText text="Belum ada SSRP di periode ini." />
-            )}
-          </div>
-
-          <Link
-            href="/dashboard/ssrp/create"
-            className="mt-5 block rounded-xl bg-white px-4 py-3 text-center text-sm font-semibold text-black hover:bg-zinc-200"
-          >
-            + Kirim SSRP
-          </Link>
-        </section>
+        <ReportCard
+          title="SSRP Saya"
+          icon={ScrollText}
+          pending={
+            pendingSSRP
+          }
+          approved={
+            approvedSSRP
+          }
+          rejected={
+            rejectedSSRP
+          }
+          latest={
+            latestSSRP
+              ?.activity ??
+            null
+          }
+          latestStatus={
+            latestSSRP?.status
+          }
+          historyHref="/dashboard/ssrp/mine"
+          submitHref="/dashboard/ssrp/create"
+          submitLabel="+ Kirim SSRP"
+        />
       </div>
 
       {/* PAYROLL */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h2 className="font-semibold">
-              Gaji Saya
-            </h2>
+      <section className="glass-panel rounded-2xl p-6">
+        <SectionTitle
+          icon={
+            CircleDollarSign
+          }
+          accent="green"
+          title="Gaji Saya"
+          description={`Periode #${selectedPeriodNumber}`}
+        />
 
-            <p className="mt-1 text-sm text-zinc-500">
-              Periode #
-              {
-                selectedPeriodNumber
-              }
-            </p>
-          </div>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <PayrollItem
+            label="Gaji Kotor"
+            value={
+              formatMoney(
+                payrollGross
+              )
+            }
+          />
 
-          {payroll ? (
-            <StatusBadge
-              status={
-                payrollStatus
-              }
-            />
-          ) : selectedPeriod ? (
-            <StatusBadge
-              status={
-                selectedPeriod
-                  .status
-              }
-            />
-          ) : null}
+          <PayrollItem
+            label="Bonus"
+            value={
+              formatMoney(
+                payrollBonus
+              )
+            }
+          />
+
+          <PayrollItem
+            label="Denda"
+            value={
+              formatMoney(
+                payrollFine
+              )
+            }
+          />
+
+          <PayrollItem
+            label="Total"
+            value={
+              formatMoney(
+                payrollTotal
+              )
+            }
+          />
         </div>
 
-        {payroll ? (
-          <div className="mt-6">
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-              <PayrollItem
-                label="Plants"
-                value={Number(
-                  payroll
-                    .approved_plants ??
-                  0
-                ).toLocaleString(
-                  "en-US"
-                )}
-              />
+        <div className="mt-5 flex items-center justify-between">
+          <StatusBadge
+            status={
+              payrollStatus
+            }
+          />
 
-              <PayrollItem
-                label="Gaji Kotor"
-                value={
-                  formatMoney(
-                    payrollGross
-                  )
-                }
-              />
-
-              <PayrollItem
-                label="Bonus"
-                value={
-                  formatMoney(
-                    payrollBonus
-                  )
-                }
-              />
-
-              <PayrollItem
-                label="Denda"
-                value={
-                  formatMoney(
-                    payrollFine
-                  )
-                }
-              />
-
-              <PayrollItem
-                label="Total"
-                value={
-                  formatMoney(
-                    payrollTotal
-                  )
-                }
-              />
-            </div>
-
-            <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-              <StatusBadge
-                status={
-                  payrollStatus
-                }
-              />
-
-              <Link
-                href="/dashboard/salary/mine"
-                className="text-xs font-medium text-zinc-400 hover:text-white"
-              >
-                Lihat Detail Gaji →
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div className="mt-5 rounded-xl border border-zinc-800 bg-zinc-950/60 p-5">
-            <p className="text-sm text-zinc-500">
-              Payroll belum dibuat
-              untuk periode ini.
-            </p>
-
-            <p className="mt-2 text-xl font-bold">
-              Estimasi:{" "}
-              {formatMoney(
-                estimatedSalary
-              )}
-            </p>
-          </div>
-        )}
+          <Link
+            href="/dashboard/salary/mine"
+            prefetch={false}
+            className="text-xs text-emerald-300/60 hover:text-emerald-300"
+          >
+            Detail Gaji →
+          </Link>
+        </div>
       </section>
     </div>
   );
 }
 
 // ============================================================
-// MANAGEMENT DASHBOARD
+// MANAGEMENT
 // ============================================================
 
 async function ManagementDashboard({
@@ -1461,10 +1232,6 @@ async function ManagementDashboard({
 }) {
   const supabase =
     await createClient();
-
-  // ==========================================================
-  // SEMUA QUERY UTAMA DIJALANKAN PARALEL
-  // ==========================================================
 
   const [
     settingsResult,
@@ -1479,11 +1246,7 @@ async function ManagementDashboard({
           "system_settings"
         )
         .select(`
-          storage_capacity,
-          payroll_rate,
-          ssrp_rate,
-          default_target_plants,
-          payroll_period_days
+          storage_capacity
         `)
         .limit(1)
         .maybeSingle(),
@@ -1550,10 +1313,6 @@ async function ManagementDashboard({
         `),
     ]);
 
-  // ==========================================================
-  // ERROR CHECK
-  // ==========================================================
-
   if (
     settingsResult.error
   ) {
@@ -1599,20 +1358,12 @@ async function ManagementDashboard({
     );
   }
 
-  // ==========================================================
-  // SETTINGS
-  // ==========================================================
-
   const storageCapacity =
     Number(
       settingsResult.data
         ?.storage_capacity ??
         75000
-    ) || 75000;
-
-  // ==========================================================
-  // PERIODS
-  // ==========================================================
+    );
 
   const periods =
     (
@@ -1686,10 +1437,6 @@ async function ManagementDashboard({
         1
       : 0;
 
-  // ==========================================================
-  // EMPLOYEES
-  // ==========================================================
-
   const employees =
     (
       employeesResult.data ??
@@ -1704,10 +1451,6 @@ async function ManagementDashboard({
         ).toUpperCase() ===
         "ACTIVE"
     );
-
-  // ==========================================================
-  // LOAD PLANT
-  // ==========================================================
 
   const reports =
     (
@@ -1746,10 +1489,6 @@ async function ManagementDashboard({
         )
       : [];
 
-  // ==========================================================
-  // SALES
-  // ==========================================================
-
   const salesReports =
     (
       salesResult.data ??
@@ -1773,10 +1512,6 @@ async function ManagementDashboard({
         ).toUpperCase() ===
         "PENDING"
     );
-
-  // ==========================================================
-  // REAL TIME STORAGE
-  // ==========================================================
 
   const storage = {
     POTATO: 0,
@@ -1876,10 +1611,6 @@ async function ManagementDashboard({
         )
       : 0;
 
-  // ==========================================================
-  // SALES SUMMARY
-  // ==========================================================
-
   const totalSalesRevenue =
     approvedSales.reduce(
       (
@@ -1907,10 +1638,6 @@ async function ManagementDashboard({
         ),
       0
     );
-
-  // ==========================================================
-  // TARGET EMPLOYEE
-  // ==========================================================
 
   const employeeProgress =
     activeEmployees.map(
@@ -1942,67 +1669,50 @@ async function ManagementDashboard({
             0
           );
 
-        const remaining =
-          Math.max(
-            0,
-            target -
-              current
-          );
-
-        const percentage =
-          target > 0
-            ? Math.min(
-                100,
-                (
-                  current /
-                  target
-                ) * 100
-              )
-            : 0;
-
         return {
           ...employee,
           current,
-          remaining,
-          percentage,
+
+          percentage:
+            target > 0
+              ? Math.min(
+                  100,
+                  (
+                    current /
+                    target
+                  ) * 100
+                )
+              : 0,
         };
       }
     );
 
-  // ==========================================================
-  // PERIOD TOTAL
-  // ==========================================================
-
   const totalPeriodApproved =
-    periodApprovedReports
-      .reduce(
-        (
-          total,
-          report
-        ) =>
-          total +
-          Number(
-            report.amount ??
-            0
-          ),
-        0
-      );
-
-  // ==========================================================
-  // UI
-  // ==========================================================
+    periodApprovedReports.reduce(
+      (
+        total,
+        report
+      ) =>
+        total +
+        Number(
+          report.amount ??
+          0
+        ),
+      0
+    );
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
+
       {/* HEADER */}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-emerald-300/50">
             Overview
           </p>
 
-          <h1 className="mt-1 text-3xl font-bold">
+          <h1 className="mt-1 text-3xl font-bold tracking-tight">
             Jackson Farm Dashboard
           </h1>
 
@@ -2029,58 +1739,65 @@ async function ManagementDashboard({
       {/* PERIOD */}
 
       {selectedPeriod && (
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-wide text-zinc-600">
+        <section className="glass-panel-strong green-glow rounded-2xl p-5">
+          <div className="flex items-center gap-4">
+            <IconBox
+              icon={
+                CalendarDays
+              }
+              accent="green"
+            />
+
+            <div className="flex-1">
+              <p className="text-xs uppercase tracking-wide text-emerald-300/40">
                 Target Periode Aktif Tampilan
               </p>
 
-              <p className="mt-2 text-lg font-bold text-white">
+              <h2 className="mt-1 text-lg font-bold">
                 Periode #
                 {
                   selectedPeriodNumber
                 }
-              </p>
+              </h2>
 
               <p className="mt-1 text-sm text-zinc-500">
                 {formatDate(
-                  selectedPeriod
-                    .period_start
+                  selectedPeriod.period_start
                 )}
                 {" - "}
                 {formatDate(
-                  selectedPeriod
-                    .period_end
+                  selectedPeriod.period_end
                 )}
               </p>
             </div>
 
             <StatusBadge
               status={
-                selectedPeriod
-                  .status
+                selectedPeriod.status
               }
             />
           </div>
         </section>
       )}
 
-      {/* MAIN STATS */}
+      {/* STATS */}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
+          icon={Users}
+          accent="green"
           title="Total Pegawai"
           value={
             String(
-              activeEmployees
-                .length
+              activeEmployees.length
             )
           }
           description="Pegawai aktif"
         />
 
         <StatCard
+          icon={Database}
+          accent="blue"
           title="Storage"
           value={`${storageTotal.toLocaleString(
             "en-US"
@@ -2091,6 +1808,10 @@ async function ManagementDashboard({
         />
 
         <StatCard
+          icon={
+            CircleDollarSign
+          }
+          accent="green"
           title="Penjualan"
           value={
             formatMoney(
@@ -2103,90 +1824,99 @@ async function ManagementDashboard({
         />
 
         <StatCard
+          icon={BadgeCheck}
+          accent="purple"
           title="Approved Periode"
           value={
-            totalPeriodApproved
-              .toLocaleString(
-                "en-US"
-              )
+            totalPeriodApproved.toLocaleString(
+              "en-US"
+            )
           }
-          description={
-            selectedPeriod
-              ? `Periode #${selectedPeriodNumber}`
-              : "Belum ada periode"
-          }
+          description={`Periode #${selectedPeriodNumber}`}
         />
       </div>
 
-      {/* STORAGE */}
+      {/* STORAGE + INFO */}
 
       <div className="grid gap-6 xl:grid-cols-3">
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6 xl:col-span-2">
-          <div className="flex justify-between gap-4">
-            <div>
-              <h2 className="font-semibold">
-                Real Time Storage
-              </h2>
 
-              <p className="mt-1 text-sm text-zinc-500">
-                Semua Load Plant
-                Approved dikurangi
-                semua Penjualan
-                Approved.
-              </p>
-            </div>
+        {/* STORAGE */}
 
-            <span className="text-sm text-zinc-400">
-              {storagePercentage.toFixed(
-                1
-              )}
-              %
-            </span>
-          </div>
+        <section className="glass-panel green-glow rounded-2xl p-6 xl:col-span-2">
+          <SectionTitle
+            icon={Leaf}
+            accent="green"
+            title="Real Time Storage"
+            description="Semua Load Plant Approved dikurangi semua Penjualan Approved."
+            right={`${storagePercentage.toFixed(
+              1
+            )}%`}
+          />
 
-          <div className="mt-5 h-3 rounded-full bg-zinc-800">
-            <div
-              className="h-full rounded-full bg-white"
-              style={{
-                width:
-                  `${storagePercentage}%`,
-              }}
-            />
-          </div>
+          <ProgressBar
+            percentage={
+              storagePercentage
+            }
+          />
 
           <div className="mt-6 grid gap-3 sm:grid-cols-5">
-            {Object.entries(
-              storage
-            ).map(
-              ([
-                seed,
-                value,
-              ]) => (
-                <StorageItem
-                  key={
-                    seed
-                  }
-                  name={
-                    seed
-                  }
-                  value={
-                    value
-                  }
-                />
-              )
-            )}
+            <StorageItem
+              name="POTATO"
+              emoji="🥔"
+              value={
+                storage.POTATO
+              }
+            />
+
+            <StorageItem
+              name="ONION"
+              emoji="🧅"
+              value={
+                storage.ONION
+              }
+            />
+
+            <StorageItem
+              name="CORN"
+              emoji="🌽"
+              value={
+                storage.CORN
+              }
+            />
+
+            <StorageItem
+              name="WHEAT"
+              emoji="🌾"
+              value={
+                storage.WHEAT
+              }
+            />
+
+            <StorageItem
+              name="CARROT"
+              emoji="🥕"
+              value={
+                storage.CARROT
+              }
+            />
           </div>
         </section>
 
         {/* QUICK INFO */}
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
-          <h2 className="font-semibold">
-            Quick Information
-          </h2>
+        <section className="glass-panel rounded-2xl p-6">
+          <SectionTitle
+            icon={Info}
+            accent="blue"
+            title="Quick Information"
+          />
 
-          <div className="mt-5 space-y-4">
+          <div className="mt-6 space-y-5">
             <QuickInfo
+              icon={
+                Database
+              }
+              accent="blue"
               label="Available Storage"
               value={`${availableStorage.toLocaleString(
                 "en-US"
@@ -2194,16 +1924,26 @@ async function ManagementDashboard({
             />
 
             <QuickInfo
+              icon={
+                PackageOpen
+              }
+              accent="yellow"
               label="Load Plant Pending"
               value={`${pendingReports.length} Laporan`}
             />
 
             <QuickInfo
+              icon={Clock3}
+              accent="green"
               label="Pending Penjualan"
               value={`${pendingSales.length} Laporan`}
             />
 
             <QuickInfo
+              icon={
+                CircleDollarSign
+              }
+              accent="green"
               label="Pendapatan"
               value={
                 formatMoney(
@@ -2215,45 +1955,16 @@ async function ManagementDashboard({
         </section>
       </div>
 
-      {/* TARGET PEGAWAI */}
+      {/* TARGET */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 className="font-semibold">
-              Target Pegawai
-            </h2>
-
-            <p className="mt-1 text-sm text-zinc-500">
-              Hanya Load Plant
-              APPROVED pada periode
-              yang dipilih.
-            </p>
-          </div>
-
-          {selectedPeriod && (
-            <div className="sm:text-right">
-              <p className="text-sm font-semibold text-white">
-                Periode #
-                {
-                  selectedPeriodNumber
-                }
-              </p>
-
-              <p className="mt-1 text-xs text-zinc-600">
-                {formatDate(
-                  selectedPeriod
-                    .period_start
-                )}
-                {" - "}
-                {formatDate(
-                  selectedPeriod
-                    .period_end
-                )}
-              </p>
-            </div>
-          )}
-        </div>
+      <section className="glass-panel rounded-2xl p-6">
+        <SectionTitle
+          icon={Target}
+          accent="red"
+          title="Target Pegawai"
+          description="Hanya Load Plant APPROVED pada periode yang dipilih."
+          right={`Periode #${selectedPeriodNumber}`}
+        />
 
         <div className="mt-6 space-y-4">
           {employeeProgress.length >
@@ -2302,213 +2013,282 @@ async function ManagementDashboard({
 // COMPONENTS
 // ============================================================
 
+type Accent =
+  | "green"
+  | "blue"
+  | "purple"
+  | "red"
+  | "yellow";
+
+function getAccent(
+  accent: Accent
+) {
+  switch (
+    accent
+  ) {
+    case "blue":
+      return {
+        box:
+          "border-sky-400/25 bg-sky-500/10 text-sky-300 shadow-[0_0_20px_rgba(14,165,233,0.10)]",
+      };
+
+    case "purple":
+      return {
+        box:
+          "border-violet-400/25 bg-violet-500/10 text-violet-300 shadow-[0_0_20px_rgba(139,92,246,0.10)]",
+      };
+
+    case "red":
+      return {
+        box:
+          "border-rose-400/25 bg-rose-500/10 text-rose-300 shadow-[0_0_20px_rgba(244,63,94,0.10)]",
+      };
+
+    case "yellow":
+      return {
+        box:
+          "border-amber-400/25 bg-amber-500/10 text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.10)]",
+      };
+
+    default:
+      return {
+        box:
+          "border-emerald-400/25 bg-emerald-500/10 text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.10)]",
+      };
+  }
+}
+
+function IconBox({
+  icon: Icon,
+  accent,
+}: {
+  icon: LucideIcon;
+  accent: Accent;
+}) {
+  const style =
+    getAccent(
+      accent
+    );
+
+  return (
+    <div
+      className={`
+        flex
+        h-11
+        w-11
+        shrink-0
+        items-center
+        justify-center
+        rounded-xl
+        border
+        ${style.box}
+      `}
+    >
+      <Icon
+        size={20}
+        strokeWidth={1.8}
+      />
+    </div>
+  );
+}
+
 function StatCard({
+  icon,
+  accent,
   title,
   value,
   description,
 }: {
+  icon: LucideIcon;
+  accent: Accent;
   title: string;
   value: string;
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
-      <p className="text-sm text-zinc-400">
-        {title}
-      </p>
+    <div className="glass-panel green-glow-hover rounded-2xl p-5">
+      <div className="flex items-start gap-4">
+        <IconBox
+          icon={
+            icon
+          }
+          accent={
+            accent
+          }
+        />
 
-      <p className="mt-3 text-3xl font-bold">
-        {value}
-      </p>
+        <div className="min-w-0">
+          <p className="text-sm text-zinc-400">
+            {title}
+          </p>
 
-      <p className="mt-2 text-xs text-zinc-600">
-        {description}
-      </p>
+          <p className="mt-2 text-2xl font-bold text-white">
+            {value}
+          </p>
+
+          <p className="mt-1 text-xs text-zinc-600">
+            {
+              description
+            }
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
 
-// ============================================================
-// SALARY CARD
-// ============================================================
-
-function SalaryStatCard({
-  payroll,
-  total,
-  status,
-  gross,
-  bonus,
-  fine,
-  payrollRate,
-  ssrpRate,
+function SectionTitle({
+  icon,
+  accent,
+  title,
+  description,
+  right,
 }: {
-  payroll: boolean;
-  total: number;
-  status: string;
-  gross: number;
-  bonus: number;
-  fine: number;
-  payrollRate: number;
-  ssrpRate: number;
+  icon: LucideIcon;
+  accent: Accent;
+  title: string;
+  description?: string;
+  right?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
-      <div className="flex items-start justify-between gap-3">
-        <p className="text-sm text-zinc-400">
-          {payroll
-            ? "Gaji Saat Ini"
-            : "Estimasi Gaji"}
-        </p>
+    <div className="flex items-start justify-between gap-4">
+      <div className="flex items-center gap-3">
+        <IconBox
+          icon={
+            icon
+          }
+          accent={
+            accent
+          }
+        />
 
-        {payroll && (
-          <StatusBadge
-            status={
-              status
-            }
-          />
-        )}
+        <div>
+          <h2 className="font-semibold">
+            {title}
+          </h2>
+
+          {description && (
+            <p className="mt-1 text-xs text-zinc-500">
+              {
+                description
+              }
+            </p>
+          )}
+        </div>
       </div>
 
-      <p className="mt-3 text-3xl font-bold text-white">
-        {formatMoney(
-          total
-        )}
-      </p>
-
-      {payroll ? (
-        <p className="mt-2 text-xs leading-5 text-zinc-600">
-          Kotor{" "}
-          {formatMoney(
-            gross
-          )}
-          {" + "}
-          Bonus{" "}
-          {formatMoney(
-            bonus
-          )}
-          {" - "}
-          Denda{" "}
-          {formatMoney(
-            fine
-          )}
-        </p>
-      ) : (
-        <p className="mt-2 text-xs text-zinc-600">
-          {formatMoney(
-            payrollRate
-          )}{" "}
-          / plant •{" "}
-          {formatMoney(
-            ssrpRate
-          )}{" "}
-          / SSRP approved
+      {right && (
+        <p className="text-sm font-semibold text-zinc-300">
+          {right}
         </p>
       )}
     </div>
   );
 }
 
-// ============================================================
-// MINI STAT
-// ============================================================
-
-function MiniStat({
-  label,
-  value,
+function ProgressBar({
+  percentage,
 }: {
-  label: string;
-  value: number;
+  percentage: number;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4 text-center">
-      <p className="text-xs text-zinc-500">
-        {label}
-      </p>
-
-      <p className="mt-2 text-xl font-bold">
-        {value}
-      </p>
+    <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-black/35 ring-1 ring-emerald-500/10">
+      <div
+        className="
+          h-full
+          rounded-full
+          bg-gradient-to-r
+          from-emerald-700
+          via-emerald-400
+          to-green-300
+          shadow-[0_0_15px_rgba(52,211,153,0.35)]
+        "
+        style={{
+          width:
+            `${percentage}%`,
+        }}
+      />
     </div>
   );
 }
-
-// ============================================================
-// PAYROLL ITEM
-// ============================================================
-
-function PayrollItem({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
-      <p className="text-xs text-zinc-600">
-        {label}
-      </p>
-
-      <p className="mt-2 font-semibold">
-        {value}
-      </p>
-    </div>
-  );
-}
-
-// ============================================================
-// STORAGE ITEM
-// ============================================================
 
 function StorageItem({
   name,
+  emoji,
   value,
 }: {
   name: string;
+  emoji: string;
   value: number;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
-      <p className="text-xs text-zinc-500">
+    <div
+      className="
+        rounded-xl
+        border
+        border-emerald-500/15
+        bg-black/20
+        p-4
+        transition
+        hover:border-emerald-400/25
+        hover:bg-emerald-950/20
+      "
+    >
+      <p className="text-xs text-emerald-100/50">
         {name}
       </p>
 
-      <p className="mt-2 text-lg font-semibold">
-        {value.toLocaleString(
-          "en-US"
-        )}
-      </p>
+      <div className="mt-3 flex items-center gap-2">
+        <span className="text-lg">
+          {emoji}
+        </span>
+
+        <p className="text-lg font-bold">
+          {value.toLocaleString(
+            "en-US"
+          )}
+        </p>
+      </div>
     </div>
   );
 }
 
-// ============================================================
-// QUICK INFO
-// ============================================================
-
 function QuickInfo({
+  icon,
+  accent,
   label,
   value,
 }: {
+  icon: LucideIcon;
+  accent: Accent;
   label: string;
   value: string;
 }) {
   return (
-    <div>
-      <p className="text-xs uppercase tracking-wide text-zinc-600">
-        {label}
-      </p>
+    <div className="flex items-center gap-3">
+      <div className="scale-90">
+        <IconBox
+          icon={
+            icon
+          }
+          accent={
+            accent
+          }
+        />
+      </div>
 
-      <p className="mt-1 text-sm font-medium">
-        {value}
-      </p>
+      <div>
+        <p className="text-[11px] uppercase tracking-wide text-zinc-600">
+          {label}
+        </p>
+
+        <p className="mt-0.5 text-sm font-semibold">
+          {value}
+        </p>
+      </div>
     </div>
   );
 }
-
-// ============================================================
-// EMPLOYEE TARGET
-// ============================================================
 
 function EmployeeTarget({
   name,
@@ -2531,68 +2311,229 @@ function EmployeeTarget({
     );
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950/40 p-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="font-medium">
-            {name}
-          </p>
-
-          <p className="mt-1 text-xs text-zinc-600">
-            {seed ?? "-"}
-          </p>
-        </div>
-
-        <div className="sm:text-right">
-          <p className="text-sm font-semibold">
-            {current.toLocaleString(
-              "en-US"
-            )}
-            {" / "}
-            {target.toLocaleString(
-              "en-US"
-            )}
-          </p>
-
-          <p className="mt-1 text-xs text-zinc-600">
-            Sisa{" "}
-            {remaining.toLocaleString(
-              "en-US"
-            )}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-4 h-2 rounded-full bg-zinc-800">
+    <div className="rounded-xl border border-emerald-500/15 bg-black/20 p-4">
+      <div className="flex items-center gap-4">
         <div
-          className="h-full rounded-full bg-white"
-          style={{
-            width:
-              `${percentage}%`,
-          }}
-        />
-      </div>
+          className="
+            flex
+            h-10
+            w-10
+            shrink-0
+            items-center
+            justify-center
+            rounded-full
+            border
+            border-emerald-400/25
+            bg-emerald-500/10
+          "
+        >
+          <Sprout
+            size={19}
+            className="text-emerald-300"
+          />
+        </div>
 
-      <p className="mt-2 text-right text-xs text-zinc-600">
-        {percentage.toFixed(
-          1
-        )}
-        %
+        <div className="min-w-0 flex-1">
+          <div className="flex justify-between gap-4">
+            <div>
+              <p className="font-semibold">
+                {name}
+              </p>
+
+              <p className="mt-0.5 text-xs text-emerald-300/45">
+                {seed ?? "-"}
+              </p>
+            </div>
+
+            <div className="text-right">
+              <p className="text-sm font-semibold">
+                {current.toLocaleString(
+                  "en-US"
+                )}
+                {" / "}
+                {target.toLocaleString(
+                  "en-US"
+                )}
+              </p>
+
+              <p className="mt-1 text-xs text-zinc-600">
+                Sisa{" "}
+                {remaining.toLocaleString(
+                  "en-US"
+                )}
+              </p>
+            </div>
+          </div>
+
+          <ProgressBar
+            percentage={
+              percentage
+            }
+          />
+
+          <p className="mt-2 text-right text-xs text-emerald-300/45">
+            {percentage.toFixed(
+              1
+            )}
+            %
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PayrollItem({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-xl border border-emerald-500/15 bg-black/20 p-4">
+      <p className="text-xs text-zinc-600">
+        {label}
+      </p>
+
+      <p className="mt-2 font-bold">
+        {value}
       </p>
     </div>
   );
 }
 
-// ============================================================
-// STATUS BADGE
-// ============================================================
+function ReportCard({
+  title,
+  icon,
+  pending,
+  approved,
+  rejected,
+  latest,
+  latestStatus,
+  historyHref,
+  submitHref,
+  submitLabel,
+}: {
+  title: string;
+  icon: LucideIcon;
+  pending: number;
+  approved: number;
+  rejected: number;
+  latest: string | null;
+  latestStatus?: string;
+  historyHref: string;
+  submitHref: string;
+  submitLabel: string;
+}) {
+  return (
+    <section className="glass-panel rounded-2xl p-6">
+      <SectionTitle
+        icon={
+          icon
+        }
+        accent="green"
+        title={
+          title
+        }
+      />
+
+      <div className="mt-5 grid grid-cols-3 gap-3">
+        <MiniStat
+          label="Pending"
+          value={
+            pending
+          }
+        />
+
+        <MiniStat
+          label="Approved"
+          value={
+            approved
+          }
+        />
+
+        <MiniStat
+          label="Rejected"
+          value={
+            rejected
+          }
+        />
+      </div>
+
+      <div className="mt-4">
+        {latest ? (
+          <div className="flex items-center justify-between rounded-xl border border-emerald-500/15 bg-black/20 p-4">
+            <p className="font-medium">
+              {latest}
+            </p>
+
+            {latestStatus && (
+              <StatusBadge
+                status={
+                  latestStatus
+                }
+              />
+            )}
+          </div>
+        ) : (
+          <EmptyText text="Belum ada laporan pada periode ini." />
+        )}
+      </div>
+
+      <div className="mt-4 flex gap-3">
+        <Link
+          href={
+            historyHref
+          }
+          prefetch={false}
+          className="flex-1 rounded-xl border border-emerald-500/15 bg-black/20 px-4 py-3 text-center text-sm text-zinc-300 hover:bg-emerald-950/20"
+        >
+          Riwayat
+        </Link>
+
+        <Link
+          href={
+            submitHref
+          }
+          prefetch={false}
+          className="flex-1 rounded-xl bg-emerald-500 px-4 py-3 text-center text-sm font-semibold text-black hover:bg-emerald-400"
+        >
+          {
+            submitLabel
+          }
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+function MiniStat({
+  label,
+  value,
+}: {
+  label: string;
+  value: number;
+}) {
+  return (
+    <div className="rounded-xl border border-emerald-500/10 bg-black/20 p-3 text-center">
+      <p className="text-[11px] text-zinc-600">
+        {label}
+      </p>
+
+      <p className="mt-1 text-lg font-bold">
+        {value}
+      </p>
+    </div>
+  );
+}
 
 function StatusBadge({
   status,
 }: {
   status: string;
 }) {
-  const normalizedStatus =
+  const normalized =
     String(
       status ?? ""
     ).toUpperCase();
@@ -2601,55 +2542,49 @@ function StatusBadge({
     "border-zinc-700 bg-zinc-900 text-zinc-400";
 
   if (
-    normalizedStatus ===
+    normalized ===
       "ACTIVE" ||
-    normalizedStatus ===
+    normalized ===
       "APPROVED" ||
-    normalizedStatus ===
+    normalized ===
       "PAID" ||
-    normalizedStatus ===
+    normalized ===
       "OPEN"
   ) {
     style =
-      "border-green-900 bg-green-950/30 text-green-400";
+      "border-emerald-500/40 bg-emerald-500/10 text-emerald-300";
   }
 
   if (
-    normalizedStatus ===
+    normalized ===
       "PENDING" ||
-    normalizedStatus ===
+    normalized ===
       "UNPAID"
   ) {
     style =
-      "border-yellow-900 bg-yellow-950/30 text-yellow-400";
+      "border-amber-500/40 bg-amber-500/10 text-amber-300";
   }
 
   if (
-    normalizedStatus ===
+    normalized ===
       "REJECTED" ||
-    normalizedStatus ===
+    normalized ===
       "RESIGNED" ||
-    normalizedStatus ===
+    normalized ===
       "VOID"
   ) {
     style =
-      "border-red-900 bg-red-950/30 text-red-400";
+      "border-red-500/40 bg-red-500/10 text-red-300";
   }
 
   return (
     <span
       className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${style}`}
     >
-      {
-        normalizedStatus
-      }
+      {normalized}
     </span>
   );
 }
-
-// ============================================================
-// EMPTY
-// ============================================================
 
 function EmptyText({
   text,
@@ -2657,14 +2592,33 @@ function EmptyText({
   text: string;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-8 text-center text-sm text-zinc-600">
+    <div className="rounded-xl border border-emerald-500/10 bg-black/20 px-4 py-7 text-center text-sm text-zinc-600">
       {text}
     </div>
   );
 }
 
+function FileTextIcon({
+  size = 20,
+  className,
+}: {
+  size?: number;
+  className?: string;
+}) {
+  return (
+    <ScrollText
+      size={
+        size
+      }
+      className={
+        className
+      }
+    />
+  );
+}
+
 // ============================================================
-// MONEY
+// FORMAT
 // ============================================================
 
 function formatMoney(
@@ -2688,10 +2642,6 @@ function formatMoney(
   ).format(value);
 }
 
-// ============================================================
-// DATE
-// ============================================================
-
 function formatDate(
   value: string
 ) {
@@ -2714,10 +2664,6 @@ function formatDate(
   );
 }
 
-// ============================================================
-// TIME
-// ============================================================
-
 function formatTime(
   value: string
 ) {
@@ -2726,10 +2672,6 @@ function formatTime(
     5
   );
 }
-
-// ============================================================
-// LOCAL DATE
-// ============================================================
 
 function getLocalDateString() {
   const parts =

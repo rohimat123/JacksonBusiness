@@ -211,7 +211,7 @@ export default async function AdminShiftPage({
             Management
           </p>
 
-          <h1 className="mt-1 text-3xl font-bold text-white">
+          <h1 className="mt-1 depth-title text-3xl font-bold text-white">
             Jadwal / Shift
           </h1>
 
@@ -226,14 +226,14 @@ export default async function AdminShiftPage({
               weekStart,
               -7
             )}`}
-            className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-zinc-900"
+            className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-emerald-950/25"
           >
             ← Minggu Sebelumnya
           </Link>
 
           <Link
             href="/dashboard/shifts/admin"
-            className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-zinc-900"
+            className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-emerald-950/25"
           >
             Minggu Ini
           </Link>
@@ -243,7 +243,7 @@ export default async function AdminShiftPage({
               weekStart,
               7
             )}`}
-            className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-zinc-900"
+            className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-emerald-950/25"
           >
             Minggu Berikutnya →
           </Link>
@@ -302,8 +302,8 @@ export default async function AdminShiftPage({
 
       {/* ASSIGN SHIFT */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60">
-        <div className="border-b border-zinc-800 px-6 py-5">
+      <section className="glass-panel depth-card rounded-2xl">
+        <div className="border-b border-emerald-500/10 px-6 py-5">
           <h2 className="text-lg font-semibold text-white">
             Assign Shift
           </h2>
@@ -333,7 +333,7 @@ export default async function AdminShiftPage({
               name="employee_id"
               required
               defaultValue=""
-              className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-white outline-none focus:border-zinc-500"
+              className="w-full depth-input rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-zinc-500"
             >
               <option
                 value=""
@@ -364,7 +364,7 @@ export default async function AdminShiftPage({
               name="shift_type_id"
               required
               defaultValue=""
-              className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-white outline-none focus:border-zinc-500"
+              className="w-full depth-input rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-zinc-500"
             >
               <option
                 value=""
@@ -404,7 +404,7 @@ export default async function AdminShiftPage({
               name="shift_date"
               required
               defaultValue={getJakartaDate()}
-              className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-white outline-none focus:border-zinc-500"
+              className="w-full depth-input rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-zinc-500"
             />
           </div>
 
@@ -417,7 +417,7 @@ export default async function AdminShiftPage({
               type="text"
               name="note"
               placeholder="Contoh: Farming Pagi"
-              className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-700 focus:border-zinc-500"
+              className="w-full depth-input rounded-xl px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-700 focus:border-zinc-500"
             />
           </div>
 
@@ -434,12 +434,12 @@ export default async function AdminShiftPage({
 
       {/* WEEK */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <section className="glass-panel depth-card rounded-2xl p-6">
         <p className="text-xs uppercase tracking-wide text-zinc-600">
           Minggu
         </p>
 
-        <p className="mt-2 text-xl font-bold text-white">
+        <p className="mt-2 depth-number text-xl font-bold text-white">
           {formatDate(
             weekStart
           )}
@@ -452,8 +452,8 @@ export default async function AdminShiftPage({
 
       {/* SCHEDULE */}
 
-      <section className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/60">
-        <div className="border-b border-zinc-800 px-6 py-5">
+      <section className="overflow-hidden glass-panel depth-card rounded-2xl">
+        <div className="border-b border-emerald-500/10 px-6 py-5">
           <h2 className="font-semibold text-white">
             Jadwal Pegawai
           </h2>
@@ -472,7 +472,7 @@ export default async function AdminShiftPage({
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[950px] text-left">
-              <thead className="border-b border-zinc-800 bg-zinc-950/50">
+              <thead className="border-b border-emerald-500/10 bg-zinc-950/50">
                 <tr>
                   <TableHead>
                     Tanggal
@@ -520,7 +520,7 @@ export default async function AdminShiftPage({
                     return (
                       <tr
                         key={assignment.id}
-                        className="transition hover:bg-zinc-900/60"
+                        className="transition hover:bg-emerald-950/25/60"
                       >
                         <TableCell>
                           <div className="font-medium text-white">
@@ -613,8 +613,8 @@ export default async function AdminShiftPage({
 
       {/* SHIFT TYPES */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60">
-        <div className="border-b border-zinc-800 px-6 py-5">
+      <section className="glass-panel depth-card rounded-2xl">
+        <div className="border-b border-emerald-500/10 px-6 py-5">
           <h2 className="font-semibold text-white">
             Jenis Shift
           </h2>
@@ -629,7 +629,7 @@ export default async function AdminShiftPage({
             (shift) => (
               <div
                 key={shift.id}
-                className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4"
+                className="depth-surface rounded-xl p-4"
               >
                 <p className="font-semibold text-white">
                   {shift.name}
@@ -1358,12 +1358,12 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+    <div className="glass-panel depth-card rounded-2xl p-6">
       <p className="text-sm text-zinc-400">
         {title}
       </p>
 
-      <p className="mt-3 text-3xl font-bold text-white">
+      <p className="mt-3 depth-title text-3xl font-bold text-white">
         {value}
       </p>
 

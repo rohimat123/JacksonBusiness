@@ -345,7 +345,7 @@ export default async function MyShiftPage({
             Pekerjaan Saya
           </p>
 
-          <h1 className="mt-1 text-3xl font-bold text-white">
+          <h1 className="mt-1 depth-title text-3xl font-bold text-white">
             Jadwal Saya
           </h1>
 
@@ -359,21 +359,21 @@ export default async function MyShiftPage({
         <div className="flex flex-wrap gap-2">
           <Link
             href={`/dashboard/shifts/mine?date=${previousWeek}`}
-            className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-zinc-900"
+            className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-emerald-950/25"
           >
             ← Minggu Sebelumnya
           </Link>
 
           <Link
             href="/dashboard/shifts/mine"
-            className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-zinc-900"
+            className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-emerald-950/25"
           >
             Minggu Ini
           </Link>
 
           <Link
             href={`/dashboard/shifts/mine?date=${nextWeek}`}
-            className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-zinc-900"
+            className="rounded-lg border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-300 transition hover:bg-emerald-950/25"
           >
             Minggu Berikutnya →
           </Link>
@@ -382,14 +382,14 @@ export default async function MyShiftPage({
 
       {/* EMPLOYEE */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <section className="glass-panel depth-card rounded-2xl p-6">
         <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-xs uppercase tracking-wide text-zinc-600">
               Pegawai
             </p>
 
-            <h2 className="mt-2 text-xl font-bold text-white">
+            <h2 className="mt-2 depth-number text-xl font-bold text-white">
               {employee.name}
             </h2>
 
@@ -477,7 +477,7 @@ export default async function MyShiftPage({
 
             <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-white">
+                <h2 className="depth-title text-2xl font-bold text-white">
                   {
                     upcomingType.name
                   }
@@ -490,7 +490,7 @@ export default async function MyShiftPage({
                 </p>
               </div>
 
-              <div className="rounded-xl border border-zinc-800 bg-zinc-950/70 px-5 py-4">
+              <div className="depth-surface rounded-xl px-5 py-4">
                 <p className="text-xs text-zinc-600">
                   Jam Kerja
                 </p>
@@ -521,8 +521,8 @@ export default async function MyShiftPage({
 
       {/* 7 DAYS */}
 
-      <section className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/60">
-        <div className="border-b border-zinc-800 px-6 py-5">
+      <section className="overflow-hidden glass-panel depth-card rounded-2xl">
+        <div className="border-b border-emerald-500/10 px-6 py-5">
           <h2 className="font-semibold text-white">
             Jadwal 7 Hari
           </h2>
@@ -554,7 +554,7 @@ export default async function MyShiftPage({
               return (
                 <div
                   key={date}
-                  className={`min-h-[220px] border-b border-zinc-800 p-5 md:border-r xl:border-b-0 ${
+                  className={`min-h-[220px] border-b border-emerald-500/10 p-5 md:border-r xl:border-b-0 ${
                     isToday
                       ? "bg-zinc-800/50"
                       : "bg-transparent"
@@ -610,7 +610,7 @@ export default async function MyShiftPage({
                       </>
                     ) : (
                       <>
-                        <span className="inline-flex rounded-lg border border-zinc-800 bg-zinc-950 px-2.5 py-1 text-[11px] text-zinc-600">
+                        <span className="inline-flex rounded-lg border border-emerald-500/15 bg-zinc-950 px-2.5 py-1 text-[11px] text-zinc-600">
                           Tidak Ada Shift
                         </span>
 
@@ -631,7 +631,7 @@ export default async function MyShiftPage({
 
       {/* INFORMATION */}
 
-      <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
+      <section className="rounded-2xl border border-emerald-500/15 bg-zinc-900/40 p-6">
         <h2 className="font-semibold text-white">
           Informasi Jadwal
         </h2>
@@ -663,12 +663,12 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <div className="glass-panel depth-card rounded-2xl p-5">
       <p className="text-sm text-zinc-500">
         {title}
       </p>
 
-      <p className="mt-2 text-2xl font-bold text-white">
+      <p className="mt-2 depth-title text-2xl font-bold text-white">
         {value}
       </p>
 

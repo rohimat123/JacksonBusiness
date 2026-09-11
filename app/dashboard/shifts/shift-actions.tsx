@@ -303,8 +303,8 @@ export default function ShiftActions({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border border-zinc-800 bg-zinc-950">
-        <div className="flex flex-col gap-3 border-b border-zinc-800 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="depth-surface rounded-xl">
+        <div className="flex flex-col gap-3 border-b border-emerald-500/10 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="font-semibold text-white">
               Atur Jadwal
@@ -427,7 +427,7 @@ export default function ShiftActions({
       </div>
 
       {assignments.length > 0 && (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
+        <div className="depth-surface rounded-xl p-5">
           <h3 className="font-semibold text-white">
             Edit / Hapus Jadwal
           </h3>
@@ -445,7 +445,7 @@ export default function ShiftActions({
               return (
                 <div
                   key={assignment.id}
-                  className="flex flex-col gap-3 rounded-lg border border-zinc-800 bg-zinc-900/40 p-3 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-3 rounded-lg border border-emerald-500/15 bg-zinc-900/40 p-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div>
                     <p className="font-medium text-white">
