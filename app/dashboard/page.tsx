@@ -5,10 +5,74 @@ import { createClient } from "@/lib/supabase/server";
 
 import EmployeePeriodSelector from "./employee-period-selector";
 
+// ============================================================
+// TYPES
+// ============================================================
+
 type PageProps = {
   searchParams?: Promise<{
     period?: string;
   }>;
+};
+
+type PayrollPeriod = {
+  id: string;
+  period_start: string;
+  period_end: string;
+  status: string;
+};
+
+type EmployeeRow = {
+  id: string;
+  profile_id?: string | null;
+  name: string;
+  forum_name?: string | null;
+  seed: string | null;
+  position?: string | null;
+  join_date?: string | null;
+  status: string;
+  target_plants: number | string | null;
+};
+
+type LoadPlantReport = {
+  id: string;
+  employee_id: string;
+  seed: string;
+  amount: number | string;
+  status: string;
+  report_date: string;
+  created_at?: string;
+};
+
+type SSRPReport = {
+  id: string;
+  employee_id: string;
+  activity: string;
+  report_date: string;
+  status: string;
+  created_at?: string;
+};
+
+type PayrollRecord = {
+  id: string;
+  approved_plants: number | string | null;
+  rate_per_plant: number | string | null;
+  gross_salary: number | string | null;
+  bonus: number | string | null;
+  fine: number | string | null;
+  total_salary: number | string | null;
+  status: string | null;
+  paid_at: string | null;
+  payment_note: string | null;
+};
+
+type SaleReport = {
+  id: string;
+  seed: string;
+  quantity: number | string;
+  total_amount: number | string;
+  status: string;
+  sale_date: string;
 };
 
 // ============================================================
@@ -27,12 +91,13 @@ export default async function DashboardPage({
   const requestedPeriodId =
     params?.period ?? "";
 
+  // ==========================================================
+  // AUTH
+  // ==========================================================
+
   const {
-    data: {
-      user,
-    },
-    error:
-      userError,
+    data: { user },
+    error: userError,
   } =
     await supabase.auth.getUser();
 
@@ -40,21 +105,19 @@ export default async function DashboardPage({
     userError ||
     !user
   ) {
-    redirect(
-      "/login"
-    );
+    redirect("/login");
   }
 
+  // ==========================================================
+  // PROFILE
+  // ==========================================================
+
   const {
-    data:
-      profile,
-    error:
-      profileError,
+    data: profile,
+    error: profileError,
   } =
     await supabase
-      .from(
-        "profiles"
-      )
+      .from("profiles")
       .select(`
         id,
         full_name,
@@ -72,28 +135,29 @@ export default async function DashboardPage({
   if (
     profileError ||
     !profile ||
-    profile.status !==
+    String(
+      profile.status ?? ""
+    ).toUpperCase() !==
       "ACTIVE"
   ) {
-    redirect(
-      "/login"
-    );
+    redirect("/login");
   }
 
   const role =
     String(
-      profile.role
+      profile.role ?? ""
     ).toUpperCase();
 
+  // ==========================================================
+  // EMPLOYEE DASHBOARD
+  // ==========================================================
+
   if (
-    role ===
-    "EMPLOYEE"
+    role === "EMPLOYEE"
   ) {
     return (
       <EmployeeDashboard
-        userId={
-          user.id
-        }
+        userId={user.id}
         fullName={
           profile.full_name ??
           "Employee"
@@ -104,6 +168,10 @@ export default async function DashboardPage({
       />
     );
   }
+
+  // ==========================================================
+  // OWNER / MANAGER
+  // ==========================================================
 
   return (
     <ManagementDashboard
@@ -130,31 +198,33 @@ async function EmployeeDashboard({
   const supabase =
     await createClient();
 
-  const settings =
-    await getSystemSettings();
-
-  const payrollRate =
-    settings.payrollRate;
-
-  const ssrpRate =
-    settings.ssrpRate;
-
   // ==========================================================
-  // EMPLOYEE
+  // STEP 1
+  // SETTINGS + EMPLOYEE + PERIODS JALAN BARENG
   // ==========================================================
 
-  const {
-    data:
-      employee,
-    error:
-      employeeError,
-  } =
-    await supabase
-      .from(
-        "employees"
-      )
+  const [
+    settingsResult,
+    employeeResult,
+    periodsResult,
+  ] = await Promise.all([
+    supabase
+      .from("system_settings")
+      .select(`
+        storage_capacity,
+        payroll_rate,
+        ssrp_rate,
+        default_target_plants,
+        payroll_period_days
+      `)
+      .limit(1)
+      .maybeSingle(),
+
+    supabase
+      .from("employees")
       .select(`
         id,
+        profile_id,
         name,
         forum_name,
         seed,
@@ -167,15 +237,60 @@ async function EmployeeDashboard({
         "profile_id",
         userId
       )
-      .maybeSingle();
+      .maybeSingle(),
+
+    supabase
+      .from("payroll_periods")
+      .select(`
+        id,
+        period_start,
+        period_end,
+        status
+      `)
+      .order(
+        "period_start",
+        {
+          ascending: true,
+        }
+      ),
+  ]);
+
+  // ==========================================================
+  // ERROR CHECK
+  // ==========================================================
 
   if (
-    employeeError
+    settingsResult.error
   ) {
     throw new Error(
-      employeeError.message
+      settingsResult.error.message
     );
   }
+
+  if (
+    employeeResult.error
+  ) {
+    throw new Error(
+      employeeResult.error.message
+    );
+  }
+
+  if (
+    periodsResult.error
+  ) {
+    throw new Error(
+      periodsResult.error.message
+    );
+  }
+
+  // ==========================================================
+  // EMPLOYEE
+  // ==========================================================
+
+  const employee =
+    employeeResult.data as
+      | EmployeeRow
+      | null;
 
   if (!employee) {
     return (
@@ -197,47 +312,32 @@ async function EmployeeDashboard({
   }
 
   // ==========================================================
-  // ALL PAYROLL PERIODS
+  // SETTINGS
   // ==========================================================
 
-  const {
-    data:
-      periodsData,
-    error:
-      periodsError,
-  } =
-    await supabase
-      .from(
-        "payroll_periods"
-      )
-      .select(`
-        id,
-        period_start,
-        period_end,
-        status
-      `)
-      .order(
-        "period_start",
-        {
-          ascending:
-            true,
-        }
-      );
+  const payrollRate =
+    Number(
+      settingsResult.data
+        ?.payroll_rate ??
+        0.3
+    ) || 0.3;
 
-  if (
-    periodsError
-  ) {
-    throw new Error(
-      periodsError.message
-    );
-  }
+  const ssrpRate =
+    Number(
+      settingsResult.data
+        ?.ssrp_rate ??
+        200
+    ) || 200;
+
+  // ==========================================================
+  // PERIODS
+  // ==========================================================
 
   const periods =
-    periodsData ?? [];
-
-  // ==========================================================
-  // PERIOD LABEL
-  // ==========================================================
+    (
+      periodsResult.data ??
+      []
+    ) as PayrollPeriod[];
 
   const periodOptions =
     periods.map(
@@ -258,14 +358,9 @@ async function EmployeeDashboard({
       })
     );
 
-  // ==========================================================
-  // SELECTED PERIOD
-  // ==========================================================
-
-  let selectedPeriod =
-    null as
-      | (typeof periods)[number]
-      | null;
+  let selectedPeriod:
+    PayrollPeriod | null =
+      null;
 
   if (
     requestedPeriodId
@@ -275,8 +370,7 @@ async function EmployeeDashboard({
         (period) =>
           period.id ===
           requestedPeriodId
-      ) ??
-      null;
+      ) ?? null;
   }
 
   if (
@@ -291,27 +385,33 @@ async function EmployeeDashboard({
           "OPEN"
       ) ??
       periods[
-        periods.length -
-          1
+        periods.length - 1
       ] ??
       null;
   }
 
   // ==========================================================
-  // LOAD PLANT
+  // STEP 2
+  // LOAD + SSRP + PAYROLL + SHIFT JALAN BARENG
   // ==========================================================
 
-  let loadReports: any[] =
-    [];
+  const today =
+    getLocalDateString();
+
+  let loadPromise:
+    PromiseLike<any>;
+
+  let ssrpPromise:
+    PromiseLike<any>;
+
+  let payrollPromise:
+    PromiseLike<any>;
 
   if (
     selectedPeriod
   ) {
-    const {
-      data,
-      error,
-    } =
-      await supabase
+    loadPromise =
+      supabase
         .from(
           "load_plant_reports"
         )
@@ -339,96 +439,12 @@ async function EmployeeDashboard({
         .order(
           "created_at",
           {
-            ascending:
-              false,
+            ascending: false,
           }
         );
 
-    if (error) {
-      throw new Error(
-        error.message
-      );
-    }
-
-    loadReports =
-      data ?? [];
-  }
-
-  const approvedLoad =
-    loadReports.filter(
-      (report) =>
-        report.status ===
-        "APPROVED"
-    );
-
-  const pendingLoad =
-    loadReports.filter(
-      (report) =>
-        report.status ===
-        "PENDING"
-    );
-
-  const rejectedLoad =
-    loadReports.filter(
-      (report) =>
-        report.status ===
-        "REJECTED"
-    );
-
-  const approvedPlants =
-    approvedLoad.reduce(
-      (
-        total,
-        report
-      ) =>
-        total +
-        Number(
-          report.amount
-        ),
-      0
-    );
-
-  // ==========================================================
-  // TARGET
-  // ==========================================================
-
-  const targetPlants =
-    Number(
-      employee.target_plants
-    ) || 0;
-
-  const remainingPlants =
-    Math.max(
-      0,
-      targetPlants -
-        approvedPlants
-    );
-
-  const progress =
-    targetPlants > 0
-      ? Math.min(
-          100,
-          (approvedPlants /
-            targetPlants) *
-            100
-        )
-      : 0;
-
-  // ==========================================================
-  // SSRP
-  // ==========================================================
-
-  let ssrpReports: any[] =
-    [];
-
-  if (
-    selectedPeriod
-  ) {
-    const {
-      data,
-      error,
-    } =
-      await supabase
+    ssrpPromise =
+      supabase
         .from(
           "ssrp_reports"
         )
@@ -455,57 +471,12 @@ async function EmployeeDashboard({
         .order(
           "created_at",
           {
-            ascending:
-              false,
+            ascending: false,
           }
         );
 
-    if (error) {
-      throw new Error(
-        error.message
-      );
-    }
-
-    ssrpReports =
-      data ?? [];
-  }
-
-  const approvedSSRP =
-    ssrpReports.filter(
-      (report) =>
-        report.status ===
-        "APPROVED"
-    ).length;
-
-  const pendingSSRP =
-    ssrpReports.filter(
-      (report) =>
-        report.status ===
-        "PENDING"
-    ).length;
-
-  const rejectedSSRP =
-    ssrpReports.filter(
-      (report) =>
-        report.status ===
-        "REJECTED"
-    ).length;
-
-  // ==========================================================
-  // PAYROLL
-  // ==========================================================
-
-  let payroll: any =
-    null;
-
-  if (
-    selectedPeriod
-  ) {
-    const {
-      data,
-      error,
-    } =
-      await supabase
+    payrollPromise =
+      supabase
         .from(
           "payroll_records"
         )
@@ -534,81 +505,28 @@ async function EmployeeDashboard({
           selectedPeriod.period_end
         )
         .maybeSingle();
+  } else {
+    loadPromise =
+      Promise.resolve({
+        data: [],
+        error: null,
+      });
 
-    if (error) {
-      throw new Error(
-        error.message
-      );
-    }
+    ssrpPromise =
+      Promise.resolve({
+        data: [],
+        error: null,
+      });
 
-    payroll =
-      data ?? null;
+    payrollPromise =
+      Promise.resolve({
+        data: null,
+        error: null,
+      });
   }
 
-  // ==========================================================
-  // SALARY
-  // ==========================================================
-
-  const estimatedSalary =
-    approvedPlants *
-      payrollRate +
-    approvedSSRP *
-      ssrpRate;
-
-  const payrollGross =
-    payroll
-      ? Number(
-          payroll.gross_salary ??
-            0
-        )
-      : estimatedSalary;
-
-  const payrollBonus =
-    payroll
-      ? Number(
-          payroll.bonus ??
-            0
-        )
-      : 0;
-
-  const payrollFine =
-    payroll
-      ? Number(
-          payroll.fine ??
-            0
-        )
-      : 0;
-
-  const payrollTotal =
-    payroll
-      ? Number(
-          payroll.total_salary ??
-            0
-        )
-      : estimatedSalary;
-
-  const payrollStatus =
-    payroll
-      ? String(
-          payroll.status ??
-            "UNPAID"
-        ).toUpperCase()
-      : "ESTIMASI";
-
-  // ==========================================================
-  // SHIFT TODAY
-  // ==========================================================
-
-  const today =
-    getLocalDateString();
-
-  const {
-    data:
-      todayShift,
-    error:
-      todayShiftError,
-  } =
-    await supabase
+  const shiftPromise =
+    supabase
       .from(
         "shift_assignments"
       )
@@ -633,16 +551,236 @@ async function EmployeeDashboard({
       )
       .maybeSingle();
 
+  const [
+    loadResult,
+    ssrpResult,
+    payrollResult,
+    shiftResult,
+  ] =
+    await Promise.all([
+      loadPromise,
+      ssrpPromise,
+      payrollPromise,
+      shiftPromise,
+    ]);
+
+  // ==========================================================
+  // ERRORS
+  // ==========================================================
+
   if (
-    todayShiftError
+    loadResult.error
   ) {
     throw new Error(
-      todayShiftError.message
+      loadResult.error.message
     );
   }
 
+  if (
+    ssrpResult.error
+  ) {
+    throw new Error(
+      ssrpResult.error.message
+    );
+  }
+
+  if (
+    payrollResult.error
+  ) {
+    throw new Error(
+      payrollResult.error.message
+    );
+  }
+
+  if (
+    shiftResult.error
+  ) {
+    throw new Error(
+      shiftResult.error.message
+    );
+  }
+
+  // ==========================================================
+  // LOAD PLANT
+  // ==========================================================
+
+  const loadReports =
+    (
+      loadResult.data ??
+      []
+    ) as LoadPlantReport[];
+
+  const approvedLoad =
+    loadReports.filter(
+      (report) =>
+        String(
+          report.status
+        ).toUpperCase() ===
+        "APPROVED"
+    );
+
+  const pendingLoad =
+    loadReports.filter(
+      (report) =>
+        String(
+          report.status
+        ).toUpperCase() ===
+        "PENDING"
+    );
+
+  const rejectedLoad =
+    loadReports.filter(
+      (report) =>
+        String(
+          report.status
+        ).toUpperCase() ===
+        "REJECTED"
+    );
+
+  const approvedPlants =
+    approvedLoad.reduce(
+      (
+        total,
+        report
+      ) =>
+        total +
+        Number(
+          report.amount ??
+          0
+        ),
+      0
+    );
+
+  // ==========================================================
+  // TARGET
+  // ==========================================================
+
+  const targetPlants =
+    Number(
+      employee.target_plants ??
+      0
+    ) || 0;
+
+  const remainingPlants =
+    Math.max(
+      0,
+      targetPlants -
+        approvedPlants
+    );
+
+  const progress =
+    targetPlants > 0
+      ? Math.min(
+          100,
+          (
+            approvedPlants /
+            targetPlants
+          ) * 100
+        )
+      : 0;
+
+  // ==========================================================
+  // SSRP
+  // ==========================================================
+
+  const ssrpReports =
+    (
+      ssrpResult.data ??
+      []
+    ) as SSRPReport[];
+
+  const approvedSSRP =
+    ssrpReports.filter(
+      (report) =>
+        String(
+          report.status
+        ).toUpperCase() ===
+        "APPROVED"
+    ).length;
+
+  const pendingSSRP =
+    ssrpReports.filter(
+      (report) =>
+        String(
+          report.status
+        ).toUpperCase() ===
+        "PENDING"
+    ).length;
+
+  const rejectedSSRP =
+    ssrpReports.filter(
+      (report) =>
+        String(
+          report.status
+        ).toUpperCase() ===
+        "REJECTED"
+    ).length;
+
+  // ==========================================================
+  // PAYROLL
+  // ==========================================================
+
+  const payroll =
+    payrollResult.data as
+      | PayrollRecord
+      | null;
+
+  const estimatedSalary =
+    approvedPlants *
+      payrollRate +
+    approvedSSRP *
+      ssrpRate;
+
+  const payrollGross =
+    payroll
+      ? Number(
+          payroll.gross_salary ??
+          0
+        )
+      : estimatedSalary;
+
+  const payrollBonus =
+    payroll
+      ? Number(
+          payroll.bonus ??
+          0
+        )
+      : 0;
+
+  const payrollFine =
+    payroll
+      ? Number(
+          payroll.fine ??
+          0
+        )
+      : 0;
+
+  const payrollTotal =
+    payroll
+      ? Number(
+          payroll.total_salary ??
+          0
+        )
+      : estimatedSalary;
+
+  const payrollStatus =
+    payroll
+      ? String(
+          payroll.status ??
+          "UNPAID"
+        ).toUpperCase()
+      : "ESTIMASI";
+
+  // ==========================================================
+  // SHIFT
+  // ==========================================================
+
+  const todayShift =
+    shiftResult.data;
+
   const shiftRelation =
-    todayShift?.shift_types;
+    todayShift
+      ?.shift_types;
 
   const shiftType =
     Array.isArray(
@@ -652,6 +790,10 @@ async function EmployeeDashboard({
         null
       : shiftRelation ??
         null;
+
+  // ==========================================================
+  // LATEST
+  // ==========================================================
 
   const latestLoad =
     loadReports[0] ??
@@ -675,8 +817,7 @@ async function EmployeeDashboard({
       : -1;
 
   const selectedPeriodNumber =
-    selectedPeriodIndex >=
-    0
+    selectedPeriodIndex >= 0
       ? selectedPeriodIndex +
         1
       : 0;
@@ -712,8 +853,8 @@ async function EmployeeDashboard({
               periodOptions
             }
             selectedPeriodId={
-              selectedPeriod?.id ??
-              ""
+              selectedPeriod
+                ?.id ?? ""
             }
           />
         )}
@@ -738,18 +879,21 @@ async function EmployeeDashboard({
 
               <p className="mt-1 text-sm text-zinc-500">
                 {formatDate(
-                  selectedPeriod.period_start
+                  selectedPeriod
+                    .period_start
                 )}
                 {" - "}
                 {formatDate(
-                  selectedPeriod.period_end
+                  selectedPeriod
+                    .period_end
                 )}
               </p>
             </div>
 
             <StatusBadge
               status={
-                selectedPeriod.status
+                selectedPeriod
+                  .status
               }
             />
           </div>
@@ -770,18 +914,27 @@ async function EmployeeDashboard({
             </h2>
 
             <p className="mt-1 text-sm text-zinc-500">
-              {employee.seed}
+              {
+                employee.seed ??
+                "-"
+              }
               {" • "}
-              {employee.position}
+              {
+                employee.position ??
+                "-"
+              }
               {" • "}
-              {employee.status}
+              {
+                employee.status
+              }
             </p>
 
             {employee.forum_name && (
               <p className="mt-1 text-xs text-zinc-600">
                 Forum:{" "}
                 {
-                  employee.forum_name
+                  employee
+                    .forum_name
                 }
               </p>
             )}
@@ -800,9 +953,12 @@ async function EmployeeDashboard({
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title="Approved Plants"
-          value={approvedPlants.toLocaleString(
-            "en-US"
-          )}
+          value={
+            approvedPlants
+              .toLocaleString(
+                "en-US"
+              )
+          }
           description={
             selectedPeriod
               ? `Periode #${selectedPeriodNumber}`
@@ -812,9 +968,12 @@ async function EmployeeDashboard({
 
         <StatCard
           title="Sisa Target"
-          value={remainingPlants.toLocaleString(
-            "en-US"
-          )}
+          value={
+            remainingPlants
+              .toLocaleString(
+                "en-US"
+              )
+          }
           description={`Target ${targetPlants.toLocaleString(
             "en-US"
           )}`}
@@ -822,9 +981,11 @@ async function EmployeeDashboard({
 
         <StatCard
           title="SSRP Approved"
-          value={String(
-            approvedSSRP
-          )}
+          value={
+            String(
+              approvedSSRP
+            )
+          }
           description={`${pendingSSRP} pending`}
         />
 
@@ -942,27 +1103,36 @@ async function EmployeeDashboard({
           {todayShift ? (
             <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-5">
               <p className="text-xl font-bold text-white">
-                {shiftType?.name ??
-                  "Shift"}
+                {
+                  shiftType
+                    ?.name ??
+                  "Shift"
+                }
               </p>
 
-              {shiftType?.start_time &&
-                shiftType?.end_time && (
+              {shiftType
+                ?.start_time &&
+                shiftType
+                  ?.end_time && (
                   <p className="mt-1 text-sm text-zinc-500">
                     {formatTime(
-                      shiftType.start_time
+                      shiftType
+                        .start_time
                     )}
                     {" - "}
                     {formatTime(
-                      shiftType.end_time
+                      shiftType
+                        .end_time
                     )}
                   </p>
                 )}
 
-              {todayShift.note && (
+              {todayShift
+                .note && (
                 <p className="mt-3 text-sm text-zinc-400">
                   {
-                    todayShift.note
+                    todayShift
+                      .note
                   }
                 </p>
               )}
@@ -976,6 +1146,8 @@ async function EmployeeDashboard({
       {/* REPORTS */}
 
       <div className="grid gap-6 xl:grid-cols-2">
+        {/* LOAD */}
+
         <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -1003,21 +1175,24 @@ async function EmployeeDashboard({
             <MiniStat
               label="Pending"
               value={
-                pendingLoad.length
+                pendingLoad
+                  .length
               }
             />
 
             <MiniStat
               label="Approved"
               value={
-                approvedLoad.length
+                approvedLoad
+                  .length
               }
             />
 
             <MiniStat
               label="Rejected"
               value={
-                rejectedLoad.length
+                rejectedLoad
+                  .length
               }
             />
           </div>
@@ -1029,7 +1204,8 @@ async function EmployeeDashboard({
                   <div>
                     <p className="font-semibold">
                       {Number(
-                        latestLoad.amount
+                        latestLoad
+                          .amount
                       ).toLocaleString(
                         "en-US"
                       )}{" "}
@@ -1038,14 +1214,16 @@ async function EmployeeDashboard({
 
                     <p className="mt-1 text-xs text-zinc-600">
                       {formatDate(
-                        latestLoad.report_date
+                        latestLoad
+                          .report_date
                       )}
                     </p>
                   </div>
 
                   <StatusBadge
                     status={
-                      latestLoad.status
+                      latestLoad
+                        .status
                     }
                   />
                 </div>
@@ -1062,6 +1240,8 @@ async function EmployeeDashboard({
             + Kirim Load Plant
           </Link>
         </section>
+
+        {/* SSRP */}
 
         <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
           <div className="flex items-center justify-between">
@@ -1116,20 +1296,23 @@ async function EmployeeDashboard({
                   <div>
                     <p className="font-semibold">
                       {
-                        latestSSRP.activity
+                        latestSSRP
+                          .activity
                       }
                     </p>
 
                     <p className="mt-1 text-xs text-zinc-600">
                       {formatDate(
-                        latestSSRP.report_date
+                        latestSSRP
+                          .report_date
                       )}
                     </p>
                   </div>
 
                   <StatusBadge
                     status={
-                      latestSSRP.status
+                      latestSSRP
+                        .status
                     }
                   />
                 </div>
@@ -1174,7 +1357,8 @@ async function EmployeeDashboard({
           ) : selectedPeriod ? (
             <StatusBadge
               status={
-                selectedPeriod.status
+                selectedPeriod
+                  .status
               }
             />
           ) : null}
@@ -1186,7 +1370,9 @@ async function EmployeeDashboard({
               <PayrollItem
                 label="Plants"
                 value={Number(
-                  payroll.approved_plants
+                  payroll
+                    .approved_plants ??
+                  0
                 ).toLocaleString(
                   "en-US"
                 )}
@@ -1194,30 +1380,38 @@ async function EmployeeDashboard({
 
               <PayrollItem
                 label="Gaji Kotor"
-                value={formatMoney(
-                  payrollGross
-                )}
+                value={
+                  formatMoney(
+                    payrollGross
+                  )
+                }
               />
 
               <PayrollItem
                 label="Bonus"
-                value={formatMoney(
-                  payrollBonus
-                )}
+                value={
+                  formatMoney(
+                    payrollBonus
+                  )
+                }
               />
 
               <PayrollItem
                 label="Denda"
-                value={formatMoney(
-                  payrollFine
-                )}
+                value={
+                  formatMoney(
+                    payrollFine
+                  )
+                }
               />
 
               <PayrollItem
                 label="Total"
-                value={formatMoney(
-                  payrollTotal
-                )}
+                value={
+                  formatMoney(
+                    payrollTotal
+                  )
+                }
               />
             </div>
 
@@ -1268,50 +1462,163 @@ async function ManagementDashboard({
   const supabase =
     await createClient();
 
-  const settings =
-    await getSystemSettings();
+  // ==========================================================
+  // SEMUA QUERY UTAMA DIJALANKAN PARALEL
+  // ==========================================================
+
+  const [
+    settingsResult,
+    periodsResult,
+    employeesResult,
+    reportsResult,
+    salesResult,
+  ] =
+    await Promise.all([
+      supabase
+        .from(
+          "system_settings"
+        )
+        .select(`
+          storage_capacity,
+          payroll_rate,
+          ssrp_rate,
+          default_target_plants,
+          payroll_period_days
+        `)
+        .limit(1)
+        .maybeSingle(),
+
+      supabase
+        .from(
+          "payroll_periods"
+        )
+        .select(`
+          id,
+          period_start,
+          period_end,
+          status
+        `)
+        .order(
+          "period_start",
+          {
+            ascending: true,
+          }
+        ),
+
+      supabase
+        .from(
+          "employees"
+        )
+        .select(`
+          id,
+          name,
+          seed,
+          status,
+          target_plants
+        `)
+        .order(
+          "name",
+          {
+            ascending: true,
+          }
+        ),
+
+      supabase
+        .from(
+          "load_plant_reports"
+        )
+        .select(`
+          id,
+          employee_id,
+          seed,
+          amount,
+          status,
+          report_date
+        `),
+
+      supabase
+        .from(
+          "sales_reports"
+        )
+        .select(`
+          id,
+          seed,
+          quantity,
+          total_amount,
+          status,
+          sale_date
+        `),
+    ]);
+
+  // ==========================================================
+  // ERROR CHECK
+  // ==========================================================
+
+  if (
+    settingsResult.error
+  ) {
+    throw new Error(
+      settingsResult.error
+        .message
+    );
+  }
+
+  if (
+    periodsResult.error
+  ) {
+    throw new Error(
+      periodsResult.error
+        .message
+    );
+  }
+
+  if (
+    employeesResult.error
+  ) {
+    throw new Error(
+      employeesResult.error
+        .message
+    );
+  }
+
+  if (
+    reportsResult.error
+  ) {
+    throw new Error(
+      reportsResult.error
+        .message
+    );
+  }
+
+  if (
+    salesResult.error
+  ) {
+    throw new Error(
+      salesResult.error
+        .message
+    );
+  }
+
+  // ==========================================================
+  // SETTINGS
+  // ==========================================================
 
   const storageCapacity =
-    settings.storageCapacity;
+    Number(
+      settingsResult.data
+        ?.storage_capacity ??
+        75000
+    ) || 75000;
 
   // ==========================================================
   // PERIODS
   // ==========================================================
 
-  const {
-    data:
-      periodsData,
-    error:
-      periodsError,
-  } =
-    await supabase
-      .from(
-        "payroll_periods"
-      )
-      .select(`
-        id,
-        period_start,
-        period_end,
-        status
-      `)
-      .order(
-        "period_start",
-        {
-          ascending:
-            true,
-        }
-      );
-
-  if (
-    periodsError
-  ) {
-    throw new Error(
-      periodsError.message
-    );
-  }
-
   const periods =
-    periodsData ?? [];
+    (
+      periodsResult.data ??
+      []
+    ) as PayrollPeriod[];
 
   const periodOptions =
     periods.map(
@@ -1332,10 +1639,9 @@ async function ManagementDashboard({
       })
     );
 
-  let selectedPeriod =
-    null as
-      | (typeof periods)[number]
-      | null;
+  let selectedPeriod:
+    PayrollPeriod | null =
+      null;
 
   if (
     requestedPeriodId
@@ -1345,8 +1651,7 @@ async function ManagementDashboard({
         (period) =>
           period.id ===
           requestedPeriodId
-      ) ??
-      null;
+      ) ?? null;
   }
 
   if (
@@ -1361,8 +1666,7 @@ async function ManagementDashboard({
           "OPEN"
       ) ??
       periods[
-        periods.length -
-          1
+        periods.length - 1
       ] ??
       null;
   }
@@ -1377,8 +1681,7 @@ async function ManagementDashboard({
       : -1;
 
   const selectedPeriodNumber =
-    selectedPeriodIndex >=
-    0
+    selectedPeriodIndex >= 0
       ? selectedPeriodIndex +
         1
       : 0;
@@ -1387,105 +1690,59 @@ async function ManagementDashboard({
   // EMPLOYEES
   // ==========================================================
 
-  const {
-    data:
-      employees,
-    error:
-      employeesError,
-  } =
-    await supabase
-      .from(
-        "employees"
-      )
-      .select(`
-        id,
-        name,
-        seed,
-        status,
-        target_plants
-      `)
-      .order(
-        "name",
-        {
-          ascending:
-            true,
-        }
-      );
-
-  if (
-    employeesError
-  ) {
-    throw new Error(
-      employeesError.message
-    );
-  }
+  const employees =
+    (
+      employeesResult.data ??
+      []
+    ) as EmployeeRow[];
 
   const activeEmployees =
-    employees?.filter(
+    employees.filter(
       (employee) =>
-        employee.status ===
+        String(
+          employee.status
+        ).toUpperCase() ===
         "ACTIVE"
-    ) ?? [];
-
-  // ==========================================================
-  // LOAD PLANT - ALL TIME
-  // UNTUK REAL TIME STORAGE
-  // ==========================================================
-
-  const {
-    data:
-      reports,
-    error:
-      reportsError,
-  } =
-    await supabase
-      .from(
-        "load_plant_reports"
-      )
-      .select(`
-        id,
-        employee_id,
-        seed,
-        amount,
-        status,
-        report_date
-      `);
-
-  if (
-    reportsError
-  ) {
-    throw new Error(
-      reportsError.message
     );
-  }
+
+  // ==========================================================
+  // LOAD PLANT
+  // ==========================================================
+
+  const reports =
+    (
+      reportsResult.data ??
+      []
+    ) as LoadPlantReport[];
 
   const approvedReports =
-    reports?.filter(
+    reports.filter(
       (report) =>
-        report.status ===
+        String(
+          report.status
+        ).toUpperCase() ===
         "APPROVED"
-    ) ?? [];
+    );
 
   const pendingReports =
-    reports?.filter(
+    reports.filter(
       (report) =>
-        report.status ===
+        String(
+          report.status
+        ).toUpperCase() ===
         "PENDING"
-    ) ?? [];
-
-  // ==========================================================
-  // LOAD PLANT - SELECTED PERIOD
-  // KHUSUS TARGET PEGAWAI
-  // ==========================================================
+    );
 
   const periodApprovedReports =
     selectedPeriod
       ? approvedReports.filter(
           (report) =>
             report.report_date >=
-              selectedPeriod.period_start &&
+              selectedPeriod!
+                .period_start &&
             report.report_date <=
-              selectedPeriod.period_end
+              selectedPeriod!
+                .period_end
         )
       : [];
 
@@ -1493,46 +1750,29 @@ async function ManagementDashboard({
   // SALES
   // ==========================================================
 
-  const {
-    data:
-      salesReports,
-    error:
-      salesError,
-  } =
-    await supabase
-      .from(
-        "sales_reports"
-      )
-      .select(`
-        id,
-        seed,
-        quantity,
-        total_amount,
-        status,
-        sale_date
-      `);
-
-  if (
-    salesError
-  ) {
-    throw new Error(
-      salesError.message
-    );
-  }
+  const salesReports =
+    (
+      salesResult.data ??
+      []
+    ) as SaleReport[];
 
   const approvedSales =
-    salesReports?.filter(
+    salesReports.filter(
       (sale) =>
-        sale.status ===
+        String(
+          sale.status
+        ).toUpperCase() ===
         "APPROVED"
-    ) ?? [];
+    );
 
   const pendingSales =
-    salesReports?.filter(
+    salesReports.filter(
       (sale) =>
-        sale.status ===
+        String(
+          sale.status
+        ).toUpperCase() ===
         "PENDING"
-    ) ?? [];
+    );
 
   // ==========================================================
   // REAL TIME STORAGE
@@ -1551,14 +1791,19 @@ async function ManagementDashboard({
     approvedReports
   ) {
     const seed =
-      report.seed as keyof typeof storage;
+      String(
+        report.seed ??
+        ""
+      ).toUpperCase() as
+        keyof typeof storage;
 
     if (
       seed in storage
     ) {
       storage[seed] +=
         Number(
-          report.amount
+          report.amount ??
+          0
         );
     }
   }
@@ -1568,20 +1813,26 @@ async function ManagementDashboard({
     approvedSales
   ) {
     const seed =
-      sale.seed as keyof typeof storage;
+      String(
+        sale.seed ??
+        ""
+      ).toUpperCase() as
+        keyof typeof storage;
 
     if (
       seed in storage
     ) {
       storage[seed] -=
         Number(
-          sale.quantity
+          sale.quantity ??
+          0
         );
     }
   }
 
   for (
-    const seed of Object.keys(
+    const seed of
+    Object.keys(
       storage
     ) as Array<
       keyof typeof storage
@@ -1618,9 +1869,10 @@ async function ManagementDashboard({
     storageCapacity > 0
       ? Math.min(
           100,
-          (storageTotal /
-            storageCapacity) *
-            100
+          (
+            storageTotal /
+            storageCapacity
+          ) * 100
         )
       : 0;
 
@@ -1636,7 +1888,8 @@ async function ManagementDashboard({
       ) =>
         total +
         Number(
-          sale.total_amount
+          sale.total_amount ??
+          0
         ),
       0
     );
@@ -1649,13 +1902,14 @@ async function ManagementDashboard({
       ) =>
         total +
         Number(
-          sale.quantity
+          sale.quantity ??
+          0
         ),
       0
     );
 
   // ==========================================================
-  // EMPLOYEE TARGET - SELECTED PERIOD ONLY
+  // TARGET EMPLOYEE
   // ==========================================================
 
   const employeeProgress =
@@ -1675,14 +1929,17 @@ async function ManagementDashboard({
               ) =>
                 total +
                 Number(
-                  report.amount
+                  report.amount ??
+                  0
                 ),
               0
             );
 
         const target =
           Number(
-            employee.target_plants
+            employee
+              .target_plants ??
+            0
           );
 
         const remaining =
@@ -1692,22 +1949,22 @@ async function ManagementDashboard({
               current
           );
 
+        const percentage =
+          target > 0
+            ? Math.min(
+                100,
+                (
+                  current /
+                  target
+                ) * 100
+              )
+            : 0;
+
         return {
           ...employee,
-
           current,
-
           remaining,
-
-          percentage:
-            target > 0
-              ? Math.min(
-                  100,
-                  (current /
-                    target) *
-                    100
-                )
-              : 0,
+          percentage,
         };
       }
     );
@@ -1717,17 +1974,19 @@ async function ManagementDashboard({
   // ==========================================================
 
   const totalPeriodApproved =
-    periodApprovedReports.reduce(
-      (
-        total,
-        report
-      ) =>
-        total +
-        Number(
-          report.amount
-        ),
-      0
-    );
+    periodApprovedReports
+      .reduce(
+        (
+          total,
+          report
+        ) =>
+          total +
+          Number(
+            report.amount ??
+            0
+          ),
+        0
+      );
 
   // ==========================================================
   // UI
@@ -1760,14 +2019,14 @@ async function ManagementDashboard({
               periodOptions
             }
             selectedPeriodId={
-              selectedPeriod?.id ??
-              ""
+              selectedPeriod
+                ?.id ?? ""
             }
           />
         )}
       </div>
 
-      {/* SELECTED PERIOD */}
+      {/* PERIOD */}
 
       {selectedPeriod && (
         <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
@@ -1786,18 +2045,21 @@ async function ManagementDashboard({
 
               <p className="mt-1 text-sm text-zinc-500">
                 {formatDate(
-                  selectedPeriod.period_start
+                  selectedPeriod
+                    .period_start
                 )}
                 {" - "}
                 {formatDate(
-                  selectedPeriod.period_end
+                  selectedPeriod
+                    .period_end
                 )}
               </p>
             </div>
 
             <StatusBadge
               status={
-                selectedPeriod.status
+                selectedPeriod
+                  .status
               }
             />
           </div>
@@ -1809,9 +2071,12 @@ async function ManagementDashboard({
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title="Total Pegawai"
-          value={String(
-            activeEmployees.length
-          )}
+          value={
+            String(
+              activeEmployees
+                .length
+            )
+          }
           description="Pegawai aktif"
         />
 
@@ -1827,9 +2092,11 @@ async function ManagementDashboard({
 
         <StatCard
           title="Penjualan"
-          value={formatMoney(
-            totalSalesRevenue
-          )}
+          value={
+            formatMoney(
+              totalSalesRevenue
+            )
+          }
           description={`${totalPlantsSold.toLocaleString(
             "en-US"
           )} plants terjual`}
@@ -1837,9 +2104,12 @@ async function ManagementDashboard({
 
         <StatCard
           title="Approved Periode"
-          value={totalPeriodApproved.toLocaleString(
-            "en-US"
-          )}
+          value={
+            totalPeriodApproved
+              .toLocaleString(
+                "en-US"
+              )
+          }
           description={
             selectedPeriod
               ? `Periode #${selectedPeriodNumber}`
@@ -1935,9 +2205,11 @@ async function ManagementDashboard({
 
             <QuickInfo
               label="Pendapatan"
-              value={formatMoney(
-                totalSalesRevenue
-              )}
+              value={
+                formatMoney(
+                  totalSalesRevenue
+                )
+              }
             />
           </div>
         </section>
@@ -1970,11 +2242,13 @@ async function ManagementDashboard({
 
               <p className="mt-1 text-xs text-zinc-600">
                 {formatDate(
-                  selectedPeriod.period_start
+                  selectedPeriod
+                    .period_start
                 )}
                 {" - "}
                 {formatDate(
-                  selectedPeriod.period_end
+                  selectedPeriod
+                    .period_end
                 )}
               </p>
             </div>
@@ -2001,11 +2275,16 @@ async function ManagementDashboard({
                   current={
                     employee.current
                   }
-                  target={Number(
-                    employee.target_plants
-                  )}
+                  target={
+                    Number(
+                      employee
+                        .target_plants ??
+                      0
+                    )
+                  }
                   percentage={
-                    employee.percentage
+                    employee
+                      .percentage
                   }
                 />
               )
@@ -2050,7 +2329,7 @@ function StatCard({
 }
 
 // ============================================================
-// SALARY STAT
+// SALARY CARD
 // ============================================================
 
 function SalaryStatCard({
@@ -2117,14 +2396,21 @@ function SalaryStatCard({
         <p className="mt-2 text-xs text-zinc-600">
           {formatMoney(
             payrollRate
-          )} / plant • {formatMoney(
+          )}{" "}
+          / plant •{" "}
+          {formatMoney(
             ssrpRate
-          )} / SSRP approved
+          )}{" "}
+          / SSRP approved
         </p>
       )}
     </div>
   );
 }
+
+// ============================================================
+// MINI STAT
+// ============================================================
 
 function MiniStat({
   label,
@@ -2146,6 +2432,10 @@ function MiniStat({
   );
 }
 
+// ============================================================
+// PAYROLL ITEM
+// ============================================================
+
 function PayrollItem({
   label,
   value,
@@ -2165,6 +2455,10 @@ function PayrollItem({
     </div>
   );
 }
+
+// ============================================================
+// STORAGE ITEM
+// ============================================================
 
 function StorageItem({
   name,
@@ -2188,6 +2482,10 @@ function StorageItem({
   );
 }
 
+// ============================================================
+// QUICK INFO
+// ============================================================
+
 function QuickInfo({
   label,
   value,
@@ -2208,6 +2506,10 @@ function QuickInfo({
   );
 }
 
+// ============================================================
+// EMPLOYEE TARGET
+// ============================================================
+
 function EmployeeTarget({
   name,
   seed,
@@ -2216,7 +2518,7 @@ function EmployeeTarget({
   percentage,
 }: {
   name: string;
-  seed: string;
+  seed: string | null;
   current: number;
   target: number;
   percentage: number;
@@ -2237,7 +2539,7 @@ function EmployeeTarget({
           </p>
 
           <p className="mt-1 text-xs text-zinc-600">
-            {seed}
+            {seed ?? "-"}
           </p>
         </div>
 
@@ -2281,6 +2583,10 @@ function EmployeeTarget({
   );
 }
 
+// ============================================================
+// STATUS BADGE
+// ============================================================
+
 function StatusBadge({
   status,
 }: {
@@ -2288,7 +2594,7 @@ function StatusBadge({
 }) {
   const normalizedStatus =
     String(
-      status
+      status ?? ""
     ).toUpperCase();
 
   let style =
@@ -2341,6 +2647,10 @@ function StatusBadge({
   );
 }
 
+// ============================================================
+// EMPTY
+// ============================================================
+
 function EmptyText({
   text,
 }: {
@@ -2354,7 +2664,7 @@ function EmptyText({
 }
 
 // ============================================================
-// HELPERS
+// MONEY
 // ============================================================
 
 function formatMoney(
@@ -2378,6 +2688,10 @@ function formatMoney(
   ).format(value);
 }
 
+// ============================================================
+// DATE
+// ============================================================
+
 function formatDate(
   value: string
 ) {
@@ -2400,6 +2714,10 @@ function formatDate(
   );
 }
 
+// ============================================================
+// TIME
+// ============================================================
+
 function formatTime(
   value: string
 ) {
@@ -2409,91 +2727,51 @@ function formatTime(
   );
 }
 
+// ============================================================
+// LOCAL DATE
+// ============================================================
+
 function getLocalDateString() {
-  const now =
-    new Date();
+  const parts =
+    new Intl.DateTimeFormat(
+      "en-US",
+      {
+        timeZone:
+          "Asia/Jakarta",
+
+        year:
+          "numeric",
+
+        month:
+          "2-digit",
+
+        day:
+          "2-digit",
+      }
+    ).formatToParts(
+      new Date()
+    );
 
   const year =
-    now.getFullYear();
+    parts.find(
+      (part) =>
+        part.type ===
+        "year"
+    )?.value;
 
   const month =
-    String(
-      now.getMonth() +
-        1
-    ).padStart(
-      2,
-      "0"
-    );
+    parts.find(
+      (part) =>
+        part.type ===
+        "month"
+    )?.value;
 
   const day =
-    String(
-      now.getDate()
-    ).padStart(
-      2,
-      "0"
-    );
+    parts.find(
+      (part) =>
+        part.type ===
+        "day"
+    )?.value;
 
   return `${year}-${month}-${day}`;
 }
-
-async function getSystemSettings() {
-  const supabase =
-    await createClient();
-
-  const {
-    data,
-    error,
-  } =
-    await supabase
-      .from(
-        "system_settings"
-      )
-      .select(`
-        storage_capacity,
-        payroll_rate,
-        ssrp_rate,
-        default_target_plants,
-        payroll_period_days
-      `)
-      .limit(1)
-      .maybeSingle();
-
-  if (error) {
-    throw new Error(
-      error.message
-    );
-  }
-
-  return {
-    storageCapacity:
-      Number(
-        data?.storage_capacity ??
-          75000
-      ),
-
-    payrollRate:
-      Number(
-        data?.payroll_rate ??
-          0.3
-      ),
-
-    ssrpRate:
-      Number(
-        data?.ssrp_rate ??
-          200
-      ),
-
-    defaultTargetPlants:
-      Number(
-        data?.default_target_plants ??
-          40000
-      ),
-
-    payrollPeriodDays:
-      Number(
-        data?.payroll_period_days ??
-          14
-      ),
-  };
-}
-
