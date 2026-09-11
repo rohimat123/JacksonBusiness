@@ -612,25 +612,16 @@ function MenuGroup({
 }) {
   return (
     <div className="space-y-1">
-      {items.map(
-        (
-          item
-        ) => (
-          <Link
-            key={
-              item.href
-            }
-            href={
-              item.href
-            }
-            className="block rounded-xl px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-900 hover:text-white"
-          >
-            {
-              item.label
-            }
-          </Link>
-        )
-      )}
+      {items.map((item) => (
+        <Link
+          key={item.href}
+          href={item.href}
+          prefetch={false}
+          className="block rounded-xl px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-900 hover:text-white"
+        >
+          {item.label}
+        </Link>
+      ))}
     </div>
   );
 }
