@@ -12,6 +12,7 @@ import {
   HandCoins,
   Info,
   LayoutDashboard,
+  Menu,
   PackageOpen,
   ScrollText,
   Settings,
@@ -20,6 +21,7 @@ import {
   UserCog,
   Users,
   WalletCards,
+  X,
 } from "lucide-react";
 
 import type {
@@ -42,8 +44,13 @@ type MenuItem = {
   icon: LucideIcon;
 };
 
+type MenuSection = {
+  title?: string;
+  items: MenuItem[];
+};
+
 // ============================================================
-// OWNER
+// OWNER MENUS
 // ============================================================
 
 const ownerMainMenus: MenuItem[] = [
@@ -132,7 +139,7 @@ const ownerAdminMenus: MenuItem[] = [
 ];
 
 // ============================================================
-// MANAGER
+// MANAGER MENUS
 // ============================================================
 
 const managerMainMenus: MenuItem[] = [
@@ -198,7 +205,7 @@ const managerManagementMenus: MenuItem[] = [
 ];
 
 // ============================================================
-// EMPLOYEE
+// EMPLOYEE MENUS
 // ============================================================
 
 const employeeMainMenus: MenuItem[] = [
@@ -381,6 +388,92 @@ export default async function DashboardLayout({
   }
 
   // ==========================================================
+  // MOBILE MENU SECTIONS
+  // ==========================================================
+
+  const mobileSections: MenuSection[] =
+    isOwner
+      ? [
+          {
+            items:
+              ownerMainMenus,
+          },
+          {
+            title:
+              "PEGAWAI",
+            items:
+              ownerEmployeeMenus,
+          },
+          {
+            title:
+              "LAPORAN",
+            items:
+              ownerReportMenus,
+          },
+          {
+            title:
+              "MANAGEMENT",
+            items:
+              ownerManagementMenus,
+          },
+          {
+            title:
+              "ADMINISTRATION",
+            items:
+              ownerAdminMenus,
+          },
+        ]
+      : isManager
+        ? [
+            {
+              items:
+                managerMainMenus,
+            },
+            {
+              title:
+                "PEGAWAI",
+              items:
+                managerEmployeeMenus,
+            },
+            {
+              title:
+                "LAPORAN",
+              items:
+                managerReportMenus,
+            },
+            {
+              title:
+                "MANAGEMENT",
+              items:
+                managerManagementMenus,
+            },
+          ]
+        : [
+            {
+              items:
+                employeeMainMenus,
+            },
+            {
+              title:
+                "PEKERJAAN SAYA",
+              items:
+                employeeWorkMenus,
+            },
+            {
+              title:
+                "LAPORAN SAYA",
+              items:
+                employeeReportMenus,
+            },
+            {
+              title:
+                "INFORMASI",
+              items:
+                employeeInfoMenus,
+            },
+          ];
+
+  // ==========================================================
   // UI
   // ==========================================================
 
@@ -389,7 +482,7 @@ export default async function DashboardLayout({
       <div className="flex min-h-screen">
 
         {/* ====================================================
-            SIDEBAR
+            DESKTOP SIDEBAR
         ==================================================== */}
 
         <aside
@@ -646,7 +739,9 @@ export default async function DashboardLayout({
 
         <div className="min-w-0 flex-1">
 
-          {/* HEADER */}
+          {/* ==================================================
+              HEADER
+          ================================================== */}
 
           <header
             className="
@@ -672,7 +767,7 @@ export default async function DashboardLayout({
               "
             />
 
-            <div className="flex items-center justify-between px-6 py-4 lg:px-8">
+            <div className="flex items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
               <div className="flex items-center gap-3">
                 <div
                   className="
@@ -710,7 +805,27 @@ export default async function DashboardLayout({
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
+
+                {/* MOBILE SIDEBAR */}
+
+                <MobileSidebar
+                  sections={
+                    mobileSections
+                  }
+                  fullName={
+                    String(
+                      profile.full_name ??
+                      "Jackson Farm"
+                    )
+                  }
+                  role={
+                    role
+                  }
+                />
+
+                {/* DESKTOP NAME */}
+
                 <div className="hidden text-right sm:block">
                   <p className="text-sm font-semibold">
                     {
@@ -722,6 +837,8 @@ export default async function DashboardLayout({
                     {role}
                   </p>
                 </div>
+
+                {/* AVATAR */}
 
                 <div
                   className="
@@ -747,6 +864,8 @@ export default async function DashboardLayout({
                     .toUpperCase()}
                 </div>
 
+                {/* MOBILE LOGOUT */}
+
                 <div className="lg:hidden">
                   <LogoutButton />
                 </div>
@@ -754,9 +873,11 @@ export default async function DashboardLayout({
             </div>
           </header>
 
-          {/* CONTENT */}
+          {/* ==================================================
+              CONTENT
+          ================================================== */}
 
-          <main className="relative px-6 py-8 lg:px-8">
+          <main className="relative px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
             <div className="pointer-events-none absolute right-[8%] top-0 -z-10 h-80 w-96 rounded-full bg-emerald-400/5 blur-[120px]" />
 
             {children}
@@ -862,6 +983,326 @@ function MenuGroup({
           );
         }
       )}
+    </div>
+  );
+}
+
+// ============================================================
+// MOBILE SIDEBAR
+//
+// NOTE:
+// Komponen ini sengaja ada dalam layout yang sama.
+// Agar useState bisa digunakan tanpa menjadikan seluruh layout
+// Client Component, kita memakai CSS checkbox toggle.
+// ============================================================
+
+function MobileSidebar({
+  sections,
+  fullName,
+  role,
+}: {
+  sections: MenuSection[];
+  fullName: string;
+  role: string;
+}) {
+  const toggleId =
+    "jackson-mobile-menu";
+
+  return (
+    <div className="lg:hidden">
+      {/* HIDDEN TOGGLE */}
+
+      <input
+        id={
+          toggleId
+        }
+        type="checkbox"
+        className="peer hidden"
+      />
+
+      {/* HAMBURGER */}
+
+      <label
+        htmlFor={
+          toggleId
+        }
+        aria-label="Buka menu"
+        className="
+          flex
+          h-10
+          w-10
+          cursor-pointer
+          items-center
+          justify-center
+          rounded-xl
+          border
+          border-emerald-400/25
+          bg-emerald-500/10
+          text-emerald-300
+          transition
+          hover:bg-emerald-500/20
+        "
+      >
+        <Menu size={20} />
+      </label>
+
+      {/* OVERLAY */}
+
+      <label
+        htmlFor={
+          toggleId
+        }
+        className="
+          pointer-events-none
+          fixed
+          inset-0
+          z-[90]
+          cursor-pointer
+          bg-black/70
+          opacity-0
+          backdrop-blur-sm
+          transition-opacity
+          duration-300
+
+          peer-checked:pointer-events-auto
+          peer-checked:opacity-100
+        "
+      />
+
+      {/* DRAWER */}
+
+      <aside
+        className="
+          fixed
+          bottom-0
+          left-0
+          top-0
+          z-[100]
+          flex
+          w-[290px]
+          max-w-[85vw]
+          -translate-x-full
+          flex-col
+          border-r
+          border-emerald-500/20
+          bg-[#03100d]/98
+          shadow-[20px_0_60px_rgba(0,0,0,0.55)]
+          backdrop-blur-2xl
+          transition-transform
+          duration-300
+          ease-out
+
+          peer-checked:translate-x-0
+        "
+      >
+        {/* BRAND */}
+
+        <div className="flex items-center justify-between border-b border-emerald-500/15 px-4 py-4">
+          <div className="flex items-center gap-3">
+            <div
+              className="
+                flex
+                h-11
+                w-11
+                items-center
+                justify-center
+                rounded-xl
+                border
+                border-emerald-400/25
+                bg-gradient-to-br
+                from-emerald-500/20
+                to-emerald-950/60
+              "
+            >
+              <Sprout
+                size={23}
+                className="text-emerald-300"
+              />
+            </div>
+
+            <div>
+              <p className="font-bold">
+                Jackson Farm
+              </p>
+
+              <p className="text-[11px] text-emerald-100/35">
+                Management System
+              </p>
+            </div>
+          </div>
+
+          <label
+            htmlFor={
+              toggleId
+            }
+            aria-label="Tutup menu"
+            className="
+              flex
+              h-9
+              w-9
+              cursor-pointer
+              items-center
+              justify-center
+              rounded-lg
+              border
+              border-emerald-400/20
+              bg-emerald-500/10
+              text-zinc-300
+            "
+          >
+            <X size={18} />
+          </label>
+        </div>
+
+        {/* MENU */}
+
+        <nav className="flex-1 overflow-y-auto px-3 py-4">
+          {sections.map(
+            (
+              section,
+              index
+            ) => (
+              <div
+                key={
+                  index
+                }
+              >
+                {section.title && (
+                  <p
+                    className="
+                      mb-2
+                      mt-5
+                      px-3
+                      text-[10px]
+                      font-semibold
+                      tracking-[0.18em]
+                      text-emerald-300/35
+                    "
+                  >
+                    {
+                      section.title
+                    }
+                  </p>
+                )}
+
+                <div className="space-y-1">
+                  {section.items.map(
+                    (
+                      item
+                    ) => {
+                      const Icon =
+                        item.icon;
+
+                      return (
+                        <Link
+                          key={
+                            item.href
+                          }
+                          href={
+                            item.href
+                          }
+                          prefetch={
+                            false
+                          }
+                          className="
+                            group
+                            flex
+                            items-center
+                            gap-3
+                            rounded-xl
+                            border
+                            border-transparent
+                            px-3
+                            py-3
+                            text-sm
+                            text-zinc-400
+                            transition
+                            hover:border-emerald-400/20
+                            hover:bg-emerald-950/40
+                            hover:text-white
+                          "
+                        >
+                          <Icon
+                            size={
+                              17
+                            }
+                            strokeWidth={
+                              1.8
+                            }
+                            className="
+                              shrink-0
+                              text-zinc-500
+                              group-hover:text-emerald-300
+                            "
+                          />
+
+                          <span>
+                            {
+                              item.label
+                            }
+                          </span>
+                        </Link>
+                      );
+                    }
+                  )}
+                </div>
+              </div>
+            )
+          )}
+        </nav>
+
+        {/* USER */}
+
+        <div className="border-t border-emerald-500/15 p-3">
+          <div
+            className="
+              rounded-2xl
+              border
+              border-emerald-500/20
+              bg-gradient-to-br
+              from-emerald-950/45
+              to-black/20
+              p-3
+            "
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="
+                  flex
+                  h-10
+                  w-10
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-emerald-400/25
+                  bg-emerald-500/10
+                  font-bold
+                  text-emerald-300
+                "
+              >
+                {fullName
+                  .charAt(0)
+                  .toUpperCase()}
+              </div>
+
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold">
+                  {fullName}
+                </p>
+
+                <p className="text-[11px] text-emerald-400/70">
+                  {role}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3">
+              <LogoutButton />
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
   );
 }
